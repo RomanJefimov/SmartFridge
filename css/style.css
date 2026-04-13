@@ -1,5 +1,5 @@
 body {
-    background: url("images/bg.jpg") no-repeat center center/cover;
+    background: url("/images/bg.jpg") no-repeat center center/cover;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
@@ -113,6 +113,113 @@ footer {
     padding: 1vh;
     font-size: 1.2vh;
 }
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    inset: 0;
+
+    background: rgba(0, 0, 0, 0.5);
+    
+    /* центрирование */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    /* анимация появления */
+    opacity: 0;
+    pointer-events: none;
+    transition: 0.3s;
+}
+
+/* активное состояние */
+.modal.active {
+    opacity: 1;
+    pointer-events: all;
+    display: flex;
+}
+
+.modal-content {
+    background: white;
+    padding: 30px;
+    border-radius: 20px;
+    width: 320px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+
+    /* стиль */
+    box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+
+    /* анимация */
+    transform: scale(0.8);
+    transition: 0.3s;
+}
+
+/* анимация открытия */
+.modal.active .modal-content {
+    transform: scale(1);
+}
+
+.close {
+    align-self: flex-end;
+    cursor: pointer;
+    font-size: 22px;
+}
+
+/* заголовок */
+.modal-content h2 {
+    margin: 0;
+    font-weight: 600;
+}
+
+/* инпуты */
+.modal input {
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+    font-family: 'Manrope', sans-serif;
+}
+
+/* кнопка */
+.submit-btn {
+    padding: 12px;
+    border: none;
+    border-radius: 10px;
+    background: black;
+    color: white;
+    cursor: pointer;
+    font-weight: 500;
+    transition: 0.2s;
+}
+
+.submit-btn:hover {
+    background: #333;
+}
+
+.form {
+    display: none;
+}
+
+.form.active {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.switch {
+    font-size: 14px;
+    text-align: center;
+}
+
+.switch span {
+    color: black;
+    font-weight: 600;
+    cursor: pointer;
+}
+
 /* Анимации */
 nav button,
 .try-btn {
