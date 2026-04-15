@@ -122,18 +122,16 @@ footer {
 
     background: rgba(0, 0, 0, 0.5);
     
-    /* центрирование */
     display: flex;
     align-items: center;
     justify-content: center;
 
-    /* анимация появления */
+    /* animation */
     opacity: 0;
     pointer-events: none;
     transition: 0.3s;
 }
 
-/* активное состояние */
 .modal.active {
     opacity: 1;
     pointer-events: all;
@@ -150,15 +148,13 @@ footer {
     flex-direction: column;
     gap: 12px;
 
-    /* стиль */
     box-shadow: 0 20px 60px rgba(0,0,0,0.2);
 
-    /* анимация */
+    /* animation */
     transform: scale(0.8);
     transition: 0.3s;
 }
 
-/* анимация открытия */
 .modal.active .modal-content {
     transform: scale(1);
 }
@@ -169,13 +165,11 @@ footer {
     font-size: 22px;
 }
 
-/* заголовок */
 .modal-content h2 {
     margin: 0;
     font-weight: 600;
 }
 
-/* инпуты */
 .modal input {
     padding: 12px;
     border-radius: 10px;
@@ -183,7 +177,6 @@ footer {
     font-family: 'Manrope', sans-serif;
 }
 
-/* кнопка */
 .submit-btn {
     padding: 12px;
     border: none;
@@ -220,7 +213,7 @@ footer {
     cursor: pointer;
 }
 
-/* Анимации */
+/* Animations */
 nav button,
 .try-btn {
    transition: all 0.25s ease;

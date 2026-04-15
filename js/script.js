@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const goRegister = document.getElementById("go-register");
     const goLogin = document.getElementById("go-login");
 
-    // открыть модалку (всегда сначала login)
+    // open modal
     function openModal() {
         modal.classList.add("active");
 
@@ -19,26 +19,26 @@ document.addEventListener("DOMContentLoaded", () => {
         registerForm.classList.remove("active");
     }
 
-    // закрыть модалку
+    // close modal
     function closeModal() {
         modal.classList.remove("active");
     }
 
-    // открыть с кнопок
+    // open modal by buttons
     if (loginBtn) loginBtn.addEventListener("click", openModal);
     if (tryBtn) tryBtn.addEventListener("click", openModal);
 
-    // закрыть по крестику
+    // close by close button
     if (closeBtn) closeBtn.addEventListener("click", closeModal);
 
-    // закрыть по клику вне окна
+    // close by clicking outside
     window.addEventListener("click", (event) => {
         if (event.target === modal) {
             closeModal();
         }
     });
 
-    // переключение: login → register
+    // switch: login - register
     if (goRegister) {
         goRegister.addEventListener("click", () => {
             loginForm.classList.remove("active");
@@ -46,7 +46,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // переключение: register → login
+    // switch: register - login
     if (goLogin) {
         goLogin.addEventListener("click", () => {
             registerForm.classList.remove("active");
