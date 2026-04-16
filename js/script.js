@@ -11,6 +11,12 @@ document.addEventListener("DOMContentLoaded", () => {
     const goRegister = document.getElementById("go-register");
     const goLogin = document.getElementById("go-login");
 
+    const registerBtn = document.querySelector("#register-form .submit-btn");
+    const loginBtnSubmit = document.querySelector("#login-form .submit-btn");
+
+    const errorBox = document.getElementById("login-error");
+    const registerError = document.getElementById("register-error");
+
     // open modal
     function openModal() {
         modal.classList.add("active");
@@ -51,6 +57,72 @@ document.addEventListener("DOMContentLoaded", () => {
         goLogin.addEventListener("click", () => {
             registerForm.classList.remove("active");
             loginForm.classList.add("active");
+        });
+    }
+
+    if (registerBtn) {
+        registerBtn.addEventListener("click", async (event) => {
+            event.preventDefault();
+
+            registerError.textContent = "";
+
+            const email = document.querySelector("#register-form input[type='email']").value;
+            const password = document.querySelectorAll("#register-form input[type='password']")[0].value;
+            const repeatPassword = document.querySelectorAll("#register-form input[type='password']")[1].value;
+
+            // password match validation
+            if (password !== repeatPassword) {
+                registerError.textContent = "Passwords do not match!";
+                return;
+            }
+
+            const res = await fetch("/register", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ email, password })
+            });
+
+            const data = await res.json();
+            if (!res.ok) {
+            registerError.textContent = data.message || "Error";
+            return;
+            }
+
+            window.location.href = "/user.html";
+        });
+    }
+
+    if (loginBtnSubmit) {
+        loginBtnSubmit.addEventListener("click", async (event) => {
+            event.preventDefault();
+
+            errorBox.textContent = "";
+
+            const email = document.querySelector("#login-form input[type='email']").value;
+            const password = document.querySelector("#login-form input[type='password']").value;
+
+            const res = await fetch("/login", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ email, password })
+            });
+
+            const data = await res.json();
+
+            if (!res.ok) {
+            errorBox.textContent = data.message || "Wrong credentials";
+            return;
+            }
+
+            if (data.role === "admin") {
+            window.location.href = "admin/admin.html";
+            } else if (data.role === "user") {
+                window.location.href = "user/user.html";
+            }
         });
     }
 });

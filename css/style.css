@@ -159,6 +159,12 @@ footer {
     transform: scale(1);
 }
 
+.error {
+    color: red;
+    margin-top: 10px;
+    font-size: 14px;
+}
+
 .close {
     align-self: flex-end;
     cursor: pointer;
