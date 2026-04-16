@@ -17,34 +17,28 @@ document.addEventListener("DOMContentLoaded", () => {
     const errorBox = document.getElementById("login-error");
     const registerError = document.getElementById("register-error");
 
-    // open modal
+    // Open modal
     function openModal() {
         modal.classList.add("active");
-
         loginForm.classList.add("active");
         registerForm.classList.remove("active");
     }
 
-    // close modal
+    // Close modal
     function closeModal() {
         modal.classList.remove("active");
     }
 
-    // open modal by buttons
     if (loginBtn) loginBtn.addEventListener("click", openModal);
     if (tryBtn) tryBtn.addEventListener("click", openModal);
-
-    // close by close button
     if (closeBtn) closeBtn.addEventListener("click", closeModal);
 
-    // close by clicking outside
     window.addEventListener("click", (event) => {
         if (event.target === modal) {
             closeModal();
         }
     });
 
-    // switch: login - register
     if (goRegister) {
         goRegister.addEventListener("click", () => {
             loginForm.classList.remove("active");
@@ -52,7 +46,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // switch: register - login
     if (goLogin) {
         goLogin.addEventListener("click", () => {
             registerForm.classList.remove("active");
@@ -60,68 +53,91 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
+    // Registration
     if (registerBtn) {
         registerBtn.addEventListener("click", async (event) => {
             event.preventDefault();
 
             registerError.textContent = "";
 
-            const email = document.querySelector("#register-form input[type='email']").value;
+            const email = document.querySelector("#register-form input[type='email']").value.trim();
             const password = document.querySelectorAll("#register-form input[type='password']")[0].value;
             const repeatPassword = document.querySelectorAll("#register-form input[type='password']")[1].value;
 
-            // password match validation
+            if (!email || !password || !repeatPassword) {
+                registerError.textContent = "Fill in all fields";
+                return;
+            }
+
             if (password !== repeatPassword) {
                 registerError.textContent = "Passwords do not match!";
                 return;
             }
 
-            const res = await fetch("/register", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({ email, password })
-            });
+            try {
+                const res = await fetch("/register", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ email, password })
+                });
 
-            const data = await res.json();
-            if (!res.ok) {
-            registerError.textContent = data.message || "Error";
-            return;
+                const data = await res.json();
+
+                if (!res.ok) {
+                    registerError.textContent = data.message || "Error";
+                    return;
+                }
+
+                document.getElementById("register-form").reset();
+                window.location.href = "/user/user.html";
+
+            } catch (error) {
+                registerError.textContent = "Server error";
             }
-
-            window.location.href = "/user.html";
         });
     }
 
+    // Login
     if (loginBtnSubmit) {
         loginBtnSubmit.addEventListener("click", async (event) => {
             event.preventDefault();
 
             errorBox.textContent = "";
 
-            const email = document.querySelector("#login-form input[type='email']").value;
+            const email = document.querySelector("#login-form input[type='email']").value.trim();
             const password = document.querySelector("#login-form input[type='password']").value;
 
-            const res = await fetch("/login", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({ email, password })
-            });
-
-            const data = await res.json();
-
-            if (!res.ok) {
-            errorBox.textContent = data.message || "Wrong credentials";
-            return;
+            if (!email || !password) {
+                errorBox.textContent = "Fill in all fields";
+                return;
             }
 
-            if (data.role === "admin") {
-            window.location.href = "admin/admin.html";
-            } else if (data.role === "user") {
-                window.location.href = "user/user.html";
+            try {
+                const res = await fetch("/login", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await res.json();
+
+                if (!res.ok) {
+                    errorBox.textContent = data.message || "Wrong credentials";
+                    return;
+                }
+
+                if (data.role === "admin") {
+                    window.location.href = "/admin/admin.html";
+                } else {
+                    window.location.href = "/user/user.html";
+                }
+
+            } catch (error) {
+                errorBox.textContent = "Server error";
             }
         });
     }

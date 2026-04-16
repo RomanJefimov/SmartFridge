@@ -7,68 +7,85 @@ require('dotenv').config();
 const app = express();
 const port = 3000;
 
-//Middleware
+// Middleware
 app.use(express.json());
 app.use(express.static(path.join(__dirname)));
 
-//MongoDB connection
+// MongoDB connection
 mongoose.connect(process.env.MONGO_URI)
     .then(() => console.log('MongoDB connected'))
     .catch(err => console.log(err));
 
-//Mongoose Schema and Model
-const User = mongoose.model('User', new mongoose.Schema({
-    email: String,
-    password: String
-}));
+// Schema and Model
+const userSchema = new mongoose.Schema({
+    email:        { type: String, required: true, unique: true, lowercase: true },
+    passwordHash: { type: String, required: true },
+    role:         { type: String, enum: ['user', 'admin'], default: 'user' },
+    lastLoginAt:  { type: Date },
+}, { timestamps: true });
 
-const Admin = mongoose.model('Admin', new mongoose.Schema({
-    email: String,
-    password: String
-}));
+const User = mongoose.model('User', userSchema);
 
-//Registration
+// Registration
 app.post('/register', async (req, res) => {
     const { email, password } = req.body;
-    const hashed = await bcrypt.hash(password, 10);
 
-    const user = new User({ 
-        email, 
-        password: hashed 
-    });
+    // Validation
+    if (!email || !password) {
+        return res.status(400).json({ message: 'Email and password are required' });
+    }
+
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+        return res.status(400).json({ message: 'Invalid email format' });
+    }
+
+    // Password length validation
+    if (password.length < 6) {
+        return res.status(400).json({ message: 'Password must be at least 6 characters' });
+    }
+
+    const existing = await User.findOne({ email });
+    if (existing) {
+        return res.status(400).json({ message: 'Email already in use' });
+    }
+
+    const passwordHash = await bcrypt.hash(password, 10);
+    const user = new User({ email, passwordHash });
     await user.save();
 
     res.json({ message: 'User registered' });
 });
 
-//Login
+// Login
 app.post('/login', async (req, res) => {
     const { email, password } = req.body;
-    let user = await User.findOne({ email });
-    let role = 'user';
 
-    if (!user) {
-        user = await Admin.findOne({ email });
-        role = 'admin';
+    if (!email || !password) {
+        return res.status(400).json({ message: 'Email and password are required' });
     }
 
+    const user = await User.findOne({ email });
+
+    // Same error for user not found and wrong password
     if (!user) {
-        return res.status(400).json({ message: 'User not found' });
+        return res.status(400).json({ message: 'Invalid credentials' });
     }
 
-    const match = await bcrypt.compare(password, user.password);
+    const match = await bcrypt.compare(password, user.passwordHash);
 
     if (!match) {
-        return res.status(400).json({ message: 'wrong password' });
+        return res.status(400).json({ message: 'Invalid credentials' });
     }
 
-    res.json({
-        message: 'Login successful',
-        role: role
-    });
+    // Update lastLoginAt
+    user.lastLoginAt = new Date();
+    await user.save();
+
+    res.json({ message: 'Login successful', role: user.role });
 });
 
-//Start server
 app.listen(port, () => {
     console.log(`Server is running on port: ${port}`);
 });
