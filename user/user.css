@@ -1,0 +1,19 @@
+body {
+    font-family: "Manrope", sans-serif;
+}
+header {
+    height: 100px;
+    border: 1px solid #BEBEBE;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;  
+}
+.logo h1 {
+    font-size: 32px;
+}
+.logo img {
+    width: 81px;
+}
+.header-icons img{
+    width:36px;
+}
