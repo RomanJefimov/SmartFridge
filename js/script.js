@@ -130,11 +130,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     return;
                 }
 
-                if (data.role === "admin") {
-                    window.location.href = "/admin/admin.html";
-                } else {
-                    window.location.href = "/user/user.html";
-                }
+                localStorage.setItem("role", data.role);
+                window.location.href = "/user/user.html";
 
             } catch (error) {
                 errorBox.textContent = "Server error";

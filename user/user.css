@@ -4,27 +4,31 @@ body {
     display: flex;
     flex-direction: column;
 }
+
 header {
     height: 75px;
     border-bottom: 1px solid #BEBEBE;
     display: flex;
     align-items: center;
-    justify-content: space-between;  
+    justify-content: space-between;
     padding: 0 18px;
 }
 
 .logo {
-    display:flex;
+    display: flex;
     align-items: center;
     gap: 10px;
 }
+
 .logo h1 {
     font-size: 32px;
 }
+
 .logo img {
     width: 60px;
 }
-.header-icons img{
+
+.header-icons img {
     margin-right: 20px;
 }
 
