@@ -4,13 +4,13 @@
     <meta charset="UTF-8">
     <title>Smart Fridge</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="/css/style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
-    <script src="js/script.js"></script>
+    <script src="/js/script.js"></script>
     <main>
         <div class="firstpage">
             <nav>
@@ -64,7 +64,7 @@
         <span class="close">&times;</span>
 
         <!-- LOGIN -->
-        <div id="login-form" class="form active">
+        <form id="login-form" class="form active">
             <h2>Log in</h2>
             <input type="email" placeholder="Email">
             <input type="password" placeholder="Password">
@@ -75,22 +75,22 @@
                 Don’t have an account?
                 <span id="go-register">Sign up</span>
             </p>
-        </div>
+        </form>
 
         <!-- REGISTER -->
-        <div id="register-form" class="form">
+        <form id="register-form" class="form">
             <h2>Sign up</h2>
             <input type="email" placeholder="Email">
             <input type="password" placeholder="Password">
             <input type="password" placeholder="Repeat Password">
-            <button class="submit-btn">Create account</button>
+            <button type="submit" class="submit-btn">Create account</button>
             <p id="register-error" class="error"></p>
 
             <p class="switch">
                 Already have an account?
                 <span id="go-login">Log in</span>
             </p>
-        </div>
+        </form>
 
     </div>
 </div>
