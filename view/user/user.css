@@ -78,11 +78,28 @@ summary {
     line-height: 1.5;
 }
 
-details p {
+.menu-item {
+    width: 80%;
     margin-top: 7px;
-    margin-left: 33px;
+    margin-left: 23px;
+    padding: 8px 12px;
+    border: none;
+    background: transparent;
+    text-align: left;
     font-size: 14px;
     cursor: pointer;
+    border-radius: 8px;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.menu-item:hover {
+    background: #EAF6FF;
+}
+
+.menu-item.active {
+    background: #D8EEFF;
+    color: #009FE3;
+    font-weight: 700;
 }
 
 .content {

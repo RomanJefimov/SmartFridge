@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>Smart Fridge</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/user/user.css">
+    <link rel="stylesheet" href="/view/user/user.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -12,46 +12,48 @@
 <body>
     <header>
         <div class="logo">
-            <img src="/images/ice.png" alt="Smart fridge logo">
+            <img src="/view/public/images/ice.png" alt="Smart fridge logo">
             <h1>Smart Fridge</h1>
         </div>
         <div class="header-icons">
-            <img src="/images/guide_icon.svg" alt="Guide icon">
-            <img src="/images/profile_picture.png" alt="Profile picture">
+            <img src="/view/public/images/guide_icon.svg" alt="Guide icon">
+            <img src="/view/public/images/profile_picture.png" alt="Profile picture">
         </div>
     </header>
     <main>
         <nav>
-            <div class="upload">
-                <img src="/images/upload_icon.svg" alt="Upload icon">
+            <div class="upload menu-item">
+                <img src="/view/public/images/upload_icon.svg" alt="Upload icon">
                 <h2>Upload Picture</h2>
             </div>
             <div class="my-fridge">
                 <details open>
-                    <summary><img src="/images/fridge_icon.svg" alt="Fridge icon">My Fridge</summary>
-                    <p>List of products</p>
-                    <p>Recipes</p>
-                    <p>History</p>
+                    <summary><img src="/view/public/images/fridge_icon.svg" alt="Fridge icon">My Fridge</summary>
+                    <button class="menu-item">List of products</button>
+                    <button class="menu-item">Recipes</button>
+                    <button class="menu-item">History</button>
                 </details>
             </div>
             <div class="profile">
                 <details open>
-                    <summary><img src="/images/profile_icon.svg" alt="Profile icon">Profile</summary>
-                    <p>Personal characteristics</p>
-                    <p>Analysis</p>
+                    <summary><img src="/view/public/images/profile_icon.svg" alt="Profile icon">Profile</summary>
+                    <button class="menu-item">Personal characteristics</button>
+                    <button class="menu-item">Analysis</button>
                 </details>
             </div>
             <div class="admin-panel" style="display: none;">
-                <img src="/images/admin_icon.svg" alt="Admin icon">
+                <img src="/view/public/images/admin_icon.svg" alt="Admin icon">
                 <h2>Admin panel</h2>
             </div>
         </nav>
         <div class="content">
             <h1>Fridge is empty</h1>
-            <button class="btn">Upload picture <img src="/images/upload_icon.svg" alt="Upload icon"></button>
+            <button class="btn">Upload picture <img src="/view/public/images/upload_icon.svg" alt="Upload icon"></button>
         </div>
     </main>
     <footer>
-        <p>© 2026 Smart Fridge.</p></footer>
+        <p>© 2026 Smart Fridge.</p>
+    </footer>
+        <script src="/view/public/js/userContent.js"></script>
 </body>
 </html>
