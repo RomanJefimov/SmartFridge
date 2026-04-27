@@ -2,6 +2,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const content = document.querySelector(".content");
     const menuItems = document.querySelectorAll(".menu-item");
 
+    // Show admin panel if user is admin
+    const role = localStorage.getItem('role');
+    const adminPanel = document.querySelector('.admin-panel');
+    if (role === 'admin') {
+        adminPanel.style.display = 'flex'; 
+    }
+
     function setActive(element) {
         menuItems.forEach(item => item.classList.remove("active"));
         element.classList.add("active");
@@ -13,7 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
             <h1>Fridge is empty</h1>
             <button class="btn">
                 Upload picture 
-                <img src="/view/public/images/upload_icon.svg" alt="Upload icon">
+                <img src="/images/upload_icon.svg" alt="Upload icon">
             </button>
         `;
     }
@@ -62,6 +69,13 @@ document.addEventListener("DOMContentLoaded", () => {
                     content.innerHTML = `
                         <h1>Analysis</h1>
                         <p>Nutrition analysis will be here.</p>
+                    `;
+                    break;
+                
+                case "Admin panel":
+                    content.innerHTML = `
+                        <h1>Admin Panel</h1>
+                        <p>Welcome, admin. Here will be admin controls.</p>
                     `;
                     break;
             }

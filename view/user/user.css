@@ -76,6 +76,7 @@ summary {
     list-style: none;
     font-weight: 800;
     line-height: 1.5;
+    font-size: 20px;
 }
 
 .menu-item {
@@ -86,7 +87,7 @@ summary {
     border: none;
     background: transparent;
     text-align: left;
-    font-size: 14px;
+    font-size: 16px;
     cursor: pointer;
     border-radius: 8px;
     transition: background 0.2s ease, color 0.2s ease;
@@ -100,6 +101,23 @@ summary {
     background: #D8EEFF;
     color: #009FE3;
     font-weight: 700;
+}
+
+.admin-panel {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: 0;
+    width: 90%;
+    font-size: 20px;
+    font-weight: 700;
+    margin-top: 0;
+    padding: 1px 6px;
+}
+
+.admin-panel img {
+    width: 19px;
+    height: 19px;
 }
 
 .content {
