@@ -97,36 +97,38 @@ document.addEventListener("DOMContentLoaded", () => {
     
     // Login
     
-    loginForm.addEventListener("submit", async (event) => {
+        loginForm.addEventListener("submit", async (event) => {
         event.preventDefault();
-
+        
         errorBox.textContent = "";
-
+        
         const email = loginForm.querySelector("input[type='email']").value.trim();
         const password = loginForm.querySelector("input[type='password']").value;
-
+        
         if (!email || !password) {
             errorBox.textContent = "Fill in all fields";
             return;
         }
-
+    
         try {
             const res = await fetch("/api/auth/login", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email, password })
             });
-
+        
             const data = await res.json().catch(() => ({}));
-
+        
             if (!res.ok) {
                 errorBox.textContent = data.message || "Wrong credentials";
                 return;
             }
-
-            localStorage.setItem("role", data.role);
+        
+            localStorage.setItem('token', data.token); // 👈 добавил
+            localStorage.setItem('role', data.role);
+            localStorage.setItem('email', data.email);
             window.location.href = "/user";
-
+        
         } catch (error) {
             console.error(error);
             errorBox.textContent = "Server error";

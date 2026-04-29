@@ -1,11 +1,17 @@
 document.addEventListener("DOMContentLoaded", () => {
+    const token = localStorage.getItem('token');
+        if (!token) {
+            window.location.href = '/';           
+            return;                          
+        }
+
     const content = document.querySelector(".content");
     const menuItems = document.querySelectorAll(".menu-item");
 
     // Show admin panel if user is admin
     const role = localStorage.getItem('role');
     const email = localStorage.getItem('email');
-    
+
     const adminPanel = document.querySelector('.admin-panel');
     if (role === 'admin') {
         adminPanel.style.display = 'flex'; 
@@ -16,7 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
         element.classList.add("active");
     }
 
-    // ── ADMIN PANEL ──────────────────────────────────────────────
+    //ADMIN PANEL
     async function showAdminPanel() {
         content.innerHTML = `
             <h1>Admin Panel</h1>
@@ -31,9 +37,10 @@ document.addEventListener("DOMContentLoaded", () => {
  
     async function loadUsers() {
         const wrap = document.getElementById('users-table-wrap');
+        const token = localStorage.getItem('token');
         try {
             const res = await fetch('/api/admin/users', {
-                headers: { 'x-user-email': email }
+                headers: { 'Authorization': `Bearer ${token}` }
             });
  
             if (!res.ok) {
@@ -95,11 +102,12 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!confirmed) return;
  
         const status = document.getElementById('admin-status');
+        const token = localStorage.getItem('token');
  
         try {
             const res = await fetch(`/api/admin/users/${id}`, {
                 method: 'DELETE',
-                headers: { 'x-user-email': email }
+                headers: { 'Authorization': `Bearer ${token}` }
             });
  
             const data = await res.json();
