@@ -6,6 +6,7 @@ const authRoutes = require('./route/authRoutes.js');
 const adminRoutes = require('./route/adminRoutes.js');
 const connectDB = require('./config/db.js');
 const viewRoutes = require('./route/viewRoutes.js');
+const fridgeRoutes = require('./route/fridgeRoutes.js');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -17,6 +18,7 @@ app.use('/user', express.static(path.join(__dirname, 'view/user')));
 
 app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/fridge', fridgeRoutes);
 app.use('/', viewRoutes);
 connectDB();
 

@@ -133,15 +133,74 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
+    let fridgeData = null;
+
     // Function to show upload content
     function showUploadContent() {
         content.innerHTML = `
-            <h1>Fridge is empty</h1>
-            <button class="btn">
-                Upload picture 
-                <img src="/images/upload_icon.svg" alt="Upload icon">
-            </button>
+        <h1>Upload Fridge Photo</h1>
+        <p style="color: var(--text-secondary, #888); margin-bottom: 24px;">
+            Take a photo of your fridge and AI will analyze it
+        </p>
+        <label class="btn" style="cursor:pointer;">
+            Upload picture
+            <img src="/images/upload_icon.svg" alt="Upload icon">
+            <input type="file" id="fridge-input" accept="image/*" style="display:none;">
+        </label>
+        <div id="preview-wrap" style="margin-top: 24px;"></div>
+        <div id="analyze-status" style="margin-top: 16px; font-size: 14px;"></div>
         `;
+
+        document.getElementById('fridge-input').addEventListener('change', handleImageUpload);
+    }
+
+    async function handleImageUpload(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        
+        const preview = document.getElementById('preview-wrap');
+        const status = document.getElementById('analyze-status');
+        
+        // Show preview
+        const url = URL.createObjectURL(file);
+        preview.innerHTML = `
+            <img src="${url}" style="max-width: 320px; border-radius: 12px; margin-bottom: 16px; display:block;">
+            <button class="btn" id="analyze-btn">Analyze with AI</button>
+        `;
+        
+        document.getElementById('analyze-btn').addEventListener('click', () => analyzeImage(file, status));
+    }
+
+    async function analyzeImage(file, status) {
+        const token = localStorage.getItem('token');
+        status.textContent = '🔍 Analyzing your fridge...';
+
+        const formData = new FormData();
+        formData.append('image', file);
+
+        try {
+            const res = await fetch('/api/fridge/analyze', {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${token}` },
+                body: formData
+            });
+
+            const data = await res.json();
+
+            if (!res.ok) {
+                status.textContent = '✗ ' + (data.message || 'Error');
+                return;
+            }
+
+            fridgeData = data;
+            status.style.color = 'green';
+            status.textContent = '✓ Analysis complete! Check the menu sections.';
+
+        } catch (err) {
+            status.style.color = 'red';
+            status.textContent = '✗ Failed to analyze image';
+            console.error(err);
+        }
     }
 
     // Add click event listeners to menu items
@@ -157,19 +216,29 @@ document.addEventListener("DOMContentLoaded", () => {
                     break;
 
                 case "List of products":
-                    content.innerHTML = `
-                        <h1>List of products</h1>
-                        <p>Here will be your fridge products.</p>
-                    `;
+                    content.innerHTML = fridgeData
+                        ? `<h1>List of products</h1>
+                           <ul style="margin-top:16px; line-height:2;">
+                               ${fridgeData.products.map(p => `<li>🥦 ${p}</li>`).join('')}
+                           </ul>`
+                        : `<h1>List of products</h1><p>Upload a fridge photo first.</p>`;
                     break;
 
                 case "Recipes":
-                    content.innerHTML = `
-                        <h1>Recipes</h1>
-                        <p>Here will be recipes based on products.</p>
-                    `;
+                    content.innerHTML = fridgeData
+                        ? `<h1>Recipes</h1>
+                           ${fridgeData.recipes.map(r => `
+                               <div style="margin-bottom:24px; padding:16px; border-radius:12px; background:var(--card-bg, #1e1e1e); color: var(--text-primary, #ffffff);">
+                                   <h2 style="margin-bottom:8px;">${r.name}</h2>
+                                   <p><strong>Ingredients:</strong> ${r.ingredients.join(', ')}</p>
+                                   <ol style="margin-top:8px; line-height:1.8;">
+                                       ${r.steps.map(s => `<li>${s}</li>`).join('')}
+                                   </ol>
+                               </div>
+                           `).join('')}`
+                        : `<h1>Recipes</h1><p>Upload a fridge photo first.</p>`;
                     break;
-
+                        
                 case "History":
                     content.innerHTML = `
                         <h1>History</h1>
@@ -185,10 +254,17 @@ document.addEventListener("DOMContentLoaded", () => {
                     break;
 
                 case "Analysis":
-                    content.innerHTML = `
-                        <h1>Analysis</h1>
-                        <p>Nutrition analysis will be here.</p>
-                    `;
+                    content.innerHTML = fridgeData
+                        ? `<h1>Analysis</h1>
+                           <div style="margin-top:16px; line-height:2;">
+                               <p>🔥 Calories: ${fridgeData.analysis.calories}</p>
+                               <p>🥩 Proteins: ${fridgeData.analysis.proteins}</p>
+                               <p>🍞 Carbs: ${fridgeData.analysis.carbs}</p>
+                               <p>🧈 Fats: ${fridgeData.analysis.fats}</p>
+                               <p>🥦 Vegetables: ${fridgeData.analysis.vegetables}</p>
+                               <p>💡 Tip: ${fridgeData.analysis.tip}</p>
+                           </div>`
+                        : `<h1>Analysis</h1><p>Upload a fridge photo first.</p>`;
                     break;
                 
                 case "Admin panel":
