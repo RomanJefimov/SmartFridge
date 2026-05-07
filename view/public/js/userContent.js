@@ -197,4 +197,22 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
     });
+
+    // Show upload content by default
+        document.getElementById('profilePicBtn').addEventListener('click', e => {
+        e.stopPropagation();
+        const d = document.getElementById('profileDropdown');
+        d.style.display = d.style.display === 'none' ? 'block' : 'none';
+    });
+
+    document.addEventListener('click', () => {
+        document.getElementById('profileDropdown').style.display = 'none';
+    });
+
+    document.getElementById('profileDropdown').querySelector('button').addEventListener('click', () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('role');
+    localStorage.removeItem('email');
+    window.location.href = '/';
+    });
 });

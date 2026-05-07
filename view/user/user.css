@@ -28,8 +28,15 @@ header {
     width: 60px;
 }
 
+.header-icons {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding-right: 18px;
+}
+
 .header-icons img {
-    margin-right: 20px;
+    margin-right: 0;
 }
 
 main {
@@ -214,4 +221,42 @@ footer {
 
 .btn-delete:hover {
     background: rgba(255, 70, 70, 0.3);
+}
+
+/* ── Profile Dropdown ───────────────────────────── */
+.profile-menu-wrapper {
+    position: relative;
+}
+
+#profilePicBtn {
+    cursor: pointer;
+}
+
+.profile-dropdown {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: calc(100% + 8px);
+    background: #fff;
+    border: 1px solid #BEBEBE;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    min-width: 120px;
+    overflow: hidden;
+}
+
+.logout-btn {
+    width: 100%;
+    padding: 10px 16px;
+    border: none;
+    background: none;
+    font-family: "Manrope", sans-serif;
+    font-size: 15px;
+    color: #e03c3c;
+    cursor: pointer;
+    text-align: left;
+}
+
+.logout-btn:hover {
+    background: #fff0f0;
 }
