@@ -12,6 +12,25 @@ document.addEventListener("DOMContentLoaded", () => {
     const role = localStorage.getItem('role');
     const email = localStorage.getItem('email');
 
+    let fridgeData = null;
+    
+    // Load latest fridge data on page load
+    async function loadLatest() {
+           try {
+               const res = await fetch('/api/fridge/latest', {
+                   headers: { 'Authorization': `Bearer ${token}` }
+               });
+               const data = await res.json();
+               if (data.latest) {
+                   fridgeData = data.latest;
+               }
+           } catch (err) {
+               console.error(err);
+           }
+       }
+
+       loadLatest();
+
     const adminPanel = document.querySelector('.admin-panel');
     if (role === 'admin') {
         adminPanel.style.display = 'flex'; 
@@ -133,8 +152,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    let fridgeData = null;
-
     // Function to show upload content
     function showUploadContent() {
         content.innerHTML = `
@@ -203,6 +220,54 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
+    async function showHistory() {
+        content.innerHTML = `<h1>History</h1><p>Loading...</p>`;
+
+        try {
+            const res = await fetch('/api/fridge/history', {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            const { history } = await res.json();
+
+            if (!history.length) {
+                content.innerHTML = `<h1>History</h1><p>No uploads yet.</p>`;
+                return;
+            }
+
+            content.innerHTML = `
+                <h1>History</h1>
+                <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 16px;">
+                    ${history.map(h => `
+                        <div class="history-card" data-id="${h._id}" style="padding: 16px; border-radius: 12px; background: var(--card-bg, #1e1e1e); cursor: pointer;">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <span style="font-weight: 600;">🧊 ${new Date(h.createdAt).toLocaleString()}</span>
+                                <span style="font-size: 13px; color: #888;">${h.products.length} products</span>
+                            </div>
+                            <p style="margin-top: 8px; font-size: 13px; color: #aaa;">${h.products.slice(0, 5).join(', ')}${h.products.length > 5 ? '...' : ''}</p>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+
+            document.querySelectorAll('.history-card').forEach(card => {
+                card.addEventListener('click', () => {
+                    const entry = history.find(h => h._id === card.dataset.id);
+                    if (entry) {
+                        fridgeData = entry;
+                        content.innerHTML = `
+                            <h1>✅ Loaded from ${new Date(entry.createdAt).toLocaleDateString()}</h1>
+                            <p style="color:#888; margin-top:8px;">Now check List of products, Recipes, or Analysis.</p>
+                        `;
+                    }
+                });
+            });
+
+        } catch (err) {
+            content.innerHTML = `<h1>History</h1><p style="color:red;">Failed to load history.</p>`;
+            console.error(err);
+        }
+    }
+
     // Add click event listeners to menu items
     menuItems.forEach(item => {
         item.addEventListener("click", () => {
@@ -240,10 +305,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     break;
                         
                 case "History":
-                    content.innerHTML = `
-                        <h1>History</h1>
-                        <p>Upload history will be shown here.</p>
-                    `;
+                        showHistory();
                     break;
 
                 case "Personal characteristics":
