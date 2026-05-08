@@ -238,7 +238,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 <h1>History</h1>
                 <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 16px;">
                     ${history.map(h => `
-                        <div class="history-card" data-id="${h._id}" style="padding: 16px; border-radius: 12px; background: var(--card-bg, #1e1e1e); cursor: pointer;">
+                        <div class="history-card" data-id="${h._id}" style="padding: 16px; border-radius: 12px; background: var(--card-bg, #F5FBFF); cursor: pointer;">
                             <div style="display: flex; justify-content: space-between; align-items: center;">
                                 <span style="font-weight: 600;">🧊 ${new Date(h.createdAt).toLocaleString()}</span>
                                 <span style="font-size: 13px; color: #888;">${h.products.length} products</span>
@@ -293,7 +293,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     content.innerHTML = fridgeData
                         ? `<h1>Recipes</h1>
                            ${fridgeData.recipes.map(r => `
-                               <div style="margin-bottom:24px; padding:16px; border-radius:12px; background:var(--card-bg, #1e1e1e); color: var(--text-primary, #ffffff);">
+                               <div style="margin-bottom:24px; padding:16px; border-radius:12px; background:var(--card-bg, #F5FBFF); color: var(--text-primary, black);">
                                    <h2 style="margin-bottom:8px;">${r.name}</h2>
                                    <p><strong>Ingredients:</strong> ${r.ingredients.join(', ')}</p>
                                    <ol style="margin-top:8px; line-height:1.8;">
