@@ -170,7 +170,7 @@ document.addEventListener("DOMContentLoaded", () => {
             <div id="analyze-status" style="margin-top: 16px; font-size: 14px;"></div>
         </div>
         `;
-        
+
         document.getElementById('fridge-input').addEventListener('change', handleImageUpload);
     }
 
@@ -335,6 +335,91 @@ async function updateRecipes() {
     }
 }
 
+    function showRecipes() {
+        const recipes = fridgeData.recipes;
+        let current = 0;
+
+        function render() {
+            const r = recipes[current];
+            content.innerHTML = `
+                <div style="width:100%; height:100%; display:flex; flex-direction:column; justify-content:center; align-items:center; padding:32px; box-sizing:border-box;">
+
+                    <div style="display:flex; align-items:center; gap:8px; margin-bottom:24px; color:#888; font-size:14px;">
+                        <span>${current + 1} / ${recipes.length}</span>
+                    </div>
+
+                    <div style="
+                        width: 100%;
+                        max-width: 640px;
+                        background: #F5FBFF;
+                        border: 1px solid #D8EEFF;
+                        border-radius: 20px;
+                        padding: 32px;
+                        box-sizing: border-box;
+                        min-height: 360px;
+                    ">
+                        <h2 style="font-size:24px; font-weight:700; margin-bottom:16px;">${r.name}</h2>
+
+                        <div style="margin-bottom:20px;">
+                            <p style="font-size:13px; text-transform:uppercase; color:#888; font-weight:600; margin-bottom:8px;">Ingredients</p>
+                            <div style="display:flex; flex-wrap:wrap; gap:8px;">
+                                ${r.ingredients.map(ing => `
+                                    <span style="
+                                        padding: 4px 12px;
+                                        background: #D8EEFF;
+                                        border-radius: 20px;
+                                        font-size: 13px;
+                                        color: #009FE3;
+                                        font-weight: 600;
+                                    ">${ing}</span>
+                                `).join('')}
+                            </div>
+                        </div>
+
+                        <div>
+                            <p style="font-size:13px; text-transform:uppercase; color:#888; font-weight:600; margin-bottom:8px;">Steps</p>
+                            <ol style="padding-left:20px; line-height:2; font-size:15px;">
+                                ${r.steps.map(s => `<li>${s}</li>`).join('')}
+                            </ol>
+                        </div>
+                    </div>
+
+                    <div style="display:flex; align-items:center; gap:24px; margin-top:28px;">
+                        <button id="prev-btn" class="btn" ${current === 0 ? 'disabled style="opacity:0.4; cursor:default;"' : ''}>← Prev</button>
+                        <div style="display:flex; gap:8px;">
+                            ${recipes.map((_, i) => `
+                                <div style="
+                                    width: 8px; height: 8px;
+                                    border-radius: 50%;
+                                    background: ${i === current ? '#009FE3' : '#bfdff8'};
+                                    transition: background 0.2s;
+                                "></div>
+                            `).join('')}
+                        </div>
+                        <button id="next-btn" class="btn" ${current === recipes.length - 1 ? 'disabled style="opacity:0.4; cursor:default;"' : ''}>Next →</button>
+                    </div>
+
+                </div>
+            `;
+
+            if (current > 0) {
+                document.getElementById('prev-btn').addEventListener('click', () => {
+                    current--;
+                    render();
+                });
+            }
+
+            if (current < recipes.length - 1) {
+                document.getElementById('next-btn').addEventListener('click', () => {
+                    current++;
+                    render();
+                });
+            }
+        }
+
+        render();
+    }
+
     async function showHistory() {
         content.innerHTML = `<h1>History</h1><p>Loading...</p>`;
 
@@ -404,18 +489,11 @@ async function updateRecipes() {
                     break;
 
                 case "Recipes":
-                    content.innerHTML = fridgeData
-                        ? `<h1>Recipes</h1>
-                           ${fridgeData.recipes.map(r => `
-                               <div style="margin-bottom:24px; padding:16px; border-radius:12px; background:var(--card-bg, #F5FBFF); color: var(--text-primary, black);">
-                                   <h2 style="margin-bottom:8px;">${r.name}</h2>
-                                   <p><strong>Ingredients:</strong> ${r.ingredients.join(', ')}</p>
-                                   <ol style="margin-top:8px; line-height:1.8;">
-                                       ${r.steps.map(s => `<li>${s}</li>`).join('')}
-                                   </ol>
-                               </div>
-                           `).join('')}`
-                        : `<h1>Recipes</h1><p>Upload a fridge photo first.</p>`;
+                    if (fridgeData) {
+                        showRecipes();
+                    } else {
+                        content.innerHTML = `<h1>Recipes</h1><p>Upload a fridge photo first.</p>`;
+                    }
                     break;
                         
                 case "History":
