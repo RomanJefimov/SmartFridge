@@ -39,6 +39,7 @@ document.addEventListener("DOMContentLoaded", () => {
     function setActive(element) {
         menuItems.forEach(item => item.classList.remove("active"));
         element.classList.add("active");
+        localStorage.setItem('activeSection', element.textContent.trim());
     }
 
     //ADMIN PANEL
@@ -155,19 +156,21 @@ document.addEventListener("DOMContentLoaded", () => {
     // Function to show upload content
     function showUploadContent() {
         content.innerHTML = `
-        <h1>Upload Fridge Photo</h1>
-        <p style="color: var(--text-secondary, #888); margin-bottom: 24px;">
-            Take a photo of your fridge and AI will analyze it
-        </p>
-        <label class="btn" style="cursor:pointer;">
-            Upload picture
-            <img src="/images/upload_icon.svg" alt="Upload icon">
-            <input type="file" id="fridge-input" accept="image/*" style="display:none;">
-        </label>
-        <div id="preview-wrap" style="margin-top: 24px;"></div>
-        <div id="analyze-status" style="margin-top: 16px; font-size: 14px;"></div>
+        <div style="width:100%; height:100%; display:flex; flex-direction:column; justify-content:center; align-items:center; gap:22px;">
+            <h1 style="font-size:64px; font-weight:400;">Upload Fridge Photo</h1>
+            <p style="color: var(--text-secondary, #888);">
+                Take a photo of your fridge and AI will analyze it
+            </p>
+            <label class="btn" style="cursor:pointer;">
+                Upload picture
+                <img src="/images/upload_icon.svg" alt="Upload icon">
+                <input type="file" id="fridge-input" accept="image/*" style="display:none;">
+            </label>
+            <div id="preview-wrap" style="margin-top: 24px;"></div>
+            <div id="analyze-status" style="margin-top: 16px; font-size: 14px;"></div>
+        </div>
         `;
-
+        
         document.getElementById('fridge-input').addEventListener('change', handleImageUpload);
     }
 
@@ -219,6 +222,118 @@ document.addEventListener("DOMContentLoaded", () => {
             console.error(err);
         }
     }
+
+    function showProducts(editMode = false) {
+    const products = fridgeData.products;
+
+    content.innerHTML = `
+        <div style="width:100%; padding: 32px; box-sizing:border-box;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
+                <h1 style="font-size:32px; font-weight:700;">List of products</h1>
+                ${editMode
+                    ? `<button class="btn" id="save-btn">✓ Save</button>`
+                    : `<button class="btn" id="edit-btn">✏️ Edit</button>`
+                }
+            </div>
+            <div id="products-grid" style="
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+                gap: 12px;
+            ">
+                ${products.map((p, i) => `
+                    <div style="
+                        display: flex;
+                        align-items: center;
+                        justify-content: space-between;
+                        padding: 12px 16px;
+                        background: #F5FBFF;
+                        border: 1px solid #D8EEFF;
+                        border-radius: 12px;
+                        font-size: 15px;
+                        gap: 8px;
+                    ">
+                        <span>🥦 ${p}</span>
+                        ${editMode ? `
+                            <button data-index="${i}" class="remove-btn" style="
+                                background: none;
+                                border: none;
+                                color: #ff4646;
+                                cursor: pointer;
+                                font-size: 16px;
+                                padding: 0;
+                                line-height: 1;
+                            ">✕</button>
+                        ` : ''}
+                    </div>
+                `).join('')}
+            </div>
+            <div id="update-recipes-wrap" style="margin-top:24px;"></div>
+        </div>
+    `;
+
+    if (editMode) {
+        document.querySelectorAll('.remove-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const index = parseInt(btn.dataset.index);
+                fridgeData.products.splice(index, 1);
+                showProducts(true);
+            });
+        });
+
+        document.getElementById('save-btn').addEventListener('click', async () => {
+            try {
+                const res = await fetch('/api/fridge/products', {
+                    method: 'PATCH',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ id: fridgeData._id, products: fridgeData.products })
+                });
+
+                if (res.ok) {
+                    showProducts(false);
+                    document.getElementById('update-recipes-wrap').innerHTML = `
+                        <button class="btn" id="update-recipes-btn">🔄 Update recipes based on new products</button>
+                    `;
+                    document.getElementById('update-recipes-btn').addEventListener('click', updateRecipes);
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        });
+    } else {
+        document.getElementById('edit-btn').addEventListener('click', () => showProducts(true));
+    }
+}
+
+async function updateRecipes() {
+    const wrap = document.getElementById('update-recipes-wrap');
+    wrap.innerHTML = `<p>🔍 Updating recipes...</p>`;
+
+    try {
+        const res = await fetch('/api/fridge/recipes', {
+            method: 'PATCH',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ id: fridgeData._id, products: fridgeData.products })
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+            fridgeData.recipes = data.recipes;
+            wrap.innerHTML = `<p style="color:green;">✓ Recipes updated! Check the Recipes section.</p>`;
+        } else {
+            wrap.innerHTML = `<p style="color:red;">✗ Failed to update recipes.</p>`;
+        }
+    } catch (err) {
+        wrap.innerHTML = `<p style="color:red;">✗ Error updating recipes.</p>`;
+        console.error(err);
+    }
+}
 
     async function showHistory() {
         content.innerHTML = `<h1>History</h1><p>Loading...</p>`;
@@ -281,12 +396,11 @@ document.addEventListener("DOMContentLoaded", () => {
                     break;
 
                 case "List of products":
-                    content.innerHTML = fridgeData
-                        ? `<h1>List of products</h1>
-                           <ul style="margin-top:16px; line-height:2;">
-                               ${fridgeData.products.map(p => `<li>🥦 ${p}</li>`).join('')}
-                           </ul>`
-                        : `<h1>List of products</h1><p>Upload a fridge photo first.</p>`;
+                    if (fridgeData) {
+                    showProducts();
+                    } else {
+                    content.innerHTML = `<h1>List of products</h1><p>Upload a fridge photo first.</p>`;
+                    }
                     break;
 
                 case "Recipes":
@@ -336,6 +450,13 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
+    const savedSection = localStorage.getItem('activeSection') || 'Upload Picture';
+    const defaultItem = [...menuItems].find(i => i.textContent.trim() === savedSection);
+    if (defaultItem) {
+        setActive(defaultItem);
+        defaultItem.click();
+    }
+
     // Show upload content by default
         document.getElementById('profilePicBtn').addEventListener('click', e => {
         e.stopPropagation();
@@ -351,6 +472,7 @@ document.addEventListener("DOMContentLoaded", () => {
     localStorage.removeItem('token');
     localStorage.removeItem('role');
     localStorage.removeItem('email');
+    localStorage.removeItem('activeSection');
     window.location.href = '/';
     });
 });
