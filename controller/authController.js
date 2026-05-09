@@ -32,12 +32,17 @@ exports.register = async (req, res) => {
             passwordHash
         });
 
+        const token = jwt.sign(
+            { id: user._id, email: user.email, role: user.role },
+            process.env.JWT_SECRET,
+            { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
+        );
+
         return res.status(201).json({
             message: 'User registered',
-            user: {
-                id: user._id,
-                email: user.email
-            }
+            token,
+            role: user.role,
+            email: user.email
         });
 
     } catch (error) {

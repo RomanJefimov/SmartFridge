@@ -41,16 +41,18 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     async function showAdminPanel() {
-        content.innerHTML = `
-            <h1>Admin Panel</h1>
-            <p style="margin-bottom: 16px; color: var(--text-secondary, #888);">Manage registered users</p>
+    content.innerHTML = `
+        <div style="width:100%; padding:32px; box-sizing:border-box;">
+            <h1 style="font-size:32px; font-weight:700; margin-bottom:8px;">Admin Panel</h1>
+            <p style="margin-bottom: 24px; color:#888;">Manage registered users</p>
             <div id="admin-status" style="margin-bottom: 12px; font-size: 14px;"></div>
             <div id="users-table-wrap">
                 <p>Loading users...</p>
             </div>
-        `;
-        await loadUsers();
-    }
+        </div>
+    `;
+    await loadUsers();
+}
  
     async function loadUsers() {
         const wrap = document.getElementById('users-table-wrap');
