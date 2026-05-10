@@ -15,7 +15,7 @@ exports.deleteUser = async (req, res) => {
         const { id } = req.params;
 
         // Prevent admin from deleting themselves
-        if (req.user._id.toString() === id) {
+        if (req.user.id.toString() === id) {
             return res.status(400).json({ message: 'You cannot delete yourself' });
         }
 

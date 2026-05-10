@@ -9,25 +9,25 @@ exports.analyzeImage = async (req, res) => {
 
         const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
-        const prompt = `Analyze this fridge image and respond ONLY with a JSON object, no markdown, no backticks, just raw JSON:
-        {
-            "products": ["list of products you see"],
-            "recipes": [
-                {
-                    "name": "recipe name",
-                    "ingredients": ["ingredient1", "ingredient2"],
-                    "steps": ["step1", "step2"]
+        const prompt = `You are a JSON generator. Analyze this fridge image and respond with ONLY a valid JSON object. No text before or after. No markdown. No backticks. No comments. Just pure JSON.
+            {
+                "products": ["product1", "product2"],
+                "recipes": [
+                    {
+                        "name": "recipe name",
+                        "ingredients": ["ingredient1", "ingredient2"],
+                        "steps": ["step1", "step2"]
+                    }
+                ],
+                "analysis": {
+                    "calories": "low/medium/high",
+                    "proteins": "low/medium/high",
+                    "carbs": "low/medium/high",
+                    "fats": "low/medium/high",
+                    "vegetables": "low/medium/high",
+                    "tip": "one short tip"
                 }
-            ],
-            "analysis": {
-                "calories": "estimated total calories",
-                "proteins": "protein level: low/medium/high",
-                "carbs": "carbs level: low/medium/high",
-                "fats": "fat level: low/medium/high",
-                "vegetables": "vegetable level: low/medium/high",
-                "tip": "one short nutrition tip"
-            }
-        }`;
+            }`;
 
         const response = await ai.models.generateContent({
             model: 'gemini-2.5-flash',
@@ -47,8 +47,12 @@ exports.analyzeImage = async (req, res) => {
         });
 
         const text = response.text.trim();
-        const clean = text.replace(/```json|```/g, '').trim();
-        const data = JSON.parse(clean);
+        const jsonMatch = text.match(/\{[\s\S]*\}/);
+        if (!jsonMatch) {
+            console.error('No JSON found in response:', text);
+            return res.status(500).json({ message: 'AI returned invalid response' });
+        }
+        const data = JSON.parse(jsonMatch[0]);
 
         await FridgeHistory.create({
             userId: req.user.id,
@@ -65,11 +69,10 @@ exports.analyzeImage = async (req, res) => {
     }
 };
 
-// All history for user
 exports.getHistory = async (req, res) => {
     try {
         const history = await FridgeHistory.find({ userId: req.user.id })
-            .sort({ createdAt: -1 }); // новые первыми
+            .sort({ createdAt: -1 });
         res.json({ history });
     } catch (error) {
         console.error('HISTORY ERROR:', error);
@@ -77,7 +80,6 @@ exports.getHistory = async (req, res) => {
     }
 };
 
-// Get the latest entry
 exports.getLatest = async (req, res) => {
     try {
         const latest = await FridgeHistory.findOne({ userId: req.user.id })
@@ -89,7 +91,6 @@ exports.getLatest = async (req, res) => {
     }
 };
 
-// Update products in an existing entry
 exports.updateProducts = async (req, res) => {
     try {
         const { id, products } = req.body;
@@ -111,22 +112,22 @@ exports.updateProducts = async (req, res) => {
     }
 };
 
-// Update recipes in an existing entry
 exports.updateRecipes = async (req, res) => {
     try {
         const { id, products } = req.body;
 
         const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
-        const prompt = `Based on these products: ${products.join(', ')}
-        Generate recipes and respond ONLY with a JSON array, no markdown, no backticks:
-        [
-            {
-                "name": "recipe name",
-                "ingredients": ["ingredient1", "ingredient2"],
-                "steps": ["step1", "step2"]
-            }
-        ]`;
+        const prompt = `You are a JSON generator. Based on these products: ${products.join(', ')}.
+            Generate recipes and respond with ONLY a valid JSON array. No text before or after. No markdown. No backticks. Just pure JSON array.
+                
+            [
+                {
+                    "name": "recipe name",
+                    "ingredients": ["ingredient1", "ingredient2"],
+                    "steps": ["step1", "step2"]
+                }
+            ]`;
 
         const response = await ai.models.generateContent({
             model: 'gemini-2.5-flash',
@@ -134,8 +135,12 @@ exports.updateRecipes = async (req, res) => {
         });
 
         const text = response.text.trim();
-        const clean = text.replace(/```json|```/g, '').trim();
-        const recipes = JSON.parse(clean);
+        const jsonMatch = text.match(/\[[\s\S]*\]/);
+        if (!jsonMatch) {
+            console.error('No JSON found in response:', text);
+            return res.status(500).json({ message: 'AI returned invalid response' });
+        }
+        const recipes = JSON.parse(jsonMatch[0]);
 
         const entry = await FridgeHistory.findOneAndUpdate(
             { _id: id, userId: req.user.id },

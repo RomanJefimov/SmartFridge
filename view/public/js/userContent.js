@@ -208,8 +208,11 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             fridgeData = data;
-            status.style.color = 'green';
-            status.textContent = '✓ Analysis complete! Check the menu sections.';
+            const productsItem = [...menuItems].find(i => i.textContent.trim() === 'List of products');
+            if (productsItem) {
+                setActive(productsItem);
+                productsItem.click();
+            }
 
         } catch (err) {
             status.style.color = 'red';
