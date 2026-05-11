@@ -1,0 +1,263 @@
+body {
+    font-family: "Manrope", sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+header {
+    height: 75px;
+    border-bottom: 1px solid #BEBEBE;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 18px;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo h1 {
+    font-size: 32px;
+}
+
+.logo img {
+    width: 60px;
+}
+
+.header-icons {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding-right: 18px;
+}
+
+.header-icons img {
+    margin-right: 0;
+}
+
+main {
+    flex: 1;
+    display: flex;
+}
+
+nav {
+    width: 274px;
+    background: #F5FBFF;
+    border-right: 1px solid #BEBEBE;
+    padding: 12px 8px;
+}
+
+.upload,
+.my-fridge,
+.profile {
+    margin-bottom: 14px;
+}
+
+.upload {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+}
+
+.upload h2 {
+    font-size: 16px;
+    font-weight: 800;
+}
+
+summary img {
+    width: 19px;
+    height: 19px;
+    margin-left: 2px;
+}
+
+summary {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    list-style: none;
+    font-weight: 800;
+    line-height: 1.5;
+    font-size: 20px;
+}
+
+.menu-item {
+    width: 80%;
+    margin-top: 7px;
+    margin-left: 23px;
+    padding: 8px 12px;
+    border: none;
+    background: transparent;
+    text-align: left;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.menu-item:hover {
+    background: #EAF6FF;
+}
+
+.menu-item.active {
+    background: #D8EEFF;
+    color: #009FE3;
+    font-weight: 700;
+}
+
+.admin-panel {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: 0;
+    width: 90%;
+    font-size: 20px;
+    font-weight: 700;
+    margin-top: 0;
+    padding: 1px 6px;
+}
+
+.admin-panel img {
+    width: 19px;
+    height: 19px;
+}
+
+.content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 22px;
+    overflow-y: auto;
+}
+
+.content h1 {
+    font-size: 64px;
+    font-weight: 400;
+}
+
+.btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border: 2px solid #50AAFF;
+    border-radius: 12px;
+    background: transparent;
+    cursor: pointer;
+    font-size: 18px;
+}
+
+.btn img {
+    width: 24px;
+}
+
+footer {
+    height: 70px;
+    border-top: 1px solid #BEBEBE;
+    display: flex;
+    align-items: center;
+    padding-left: 40px;
+    font-size: 14px;
+}
+
+/* ── Admin Panel ───────────────────────────── */
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+.admin-table th,
+.admin-table td {
+    padding: 10px 14px;
+    text-align: left;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.admin-table th {
+    color: #aaa;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 12px;
+}
+
+.admin-table tr:hover td {
+    background: rgba(255,255,255,0.03);
+}
+
+.role-badge {
+    padding: 2px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.role-admin {
+    background: rgba(255, 200, 0, 0.15);
+    color: #ffc800;
+}
+
+.role-user {
+    background: rgba(100, 180, 255, 0.15);
+    color: #64b4ff;
+}
+
+.btn-delete {
+    background: rgba(255, 70, 70, 0.15);
+    color: #ff4646;
+    border: 1px solid rgba(255, 70, 70, 0.3);
+    padding: 4px 14px;
+    border-radius: 6px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn-delete:hover {
+    background: rgba(255, 70, 70, 0.3);
+}
+
+/* ── Profile Dropdown ───────────────────────────── */
+.profile-menu-wrapper {
+    position: relative;
+}
+
+#profilePicBtn {
+    cursor: pointer;
+}
+
+.profile-dropdown {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: calc(100% + 8px);
+    background: #fff;
+    border: 1px solid #BEBEBE;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    min-width: 120px;
+    overflow: hidden;
+}
+
+.logout-btn {
+    width: 100%;
+    padding: 10px 16px;
+    border: none;
+    background: none;
+    font-family: "Manrope", sans-serif;
+    font-size: 15px;
+    color: #e03c3c;
+    cursor: pointer;
+    text-align: left;
+}
+
+.logout-btn:hover {
+    background: #fff0f0;
+}

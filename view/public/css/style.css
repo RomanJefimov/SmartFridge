@@ -1,0 +1,263 @@
+body {
+    background: url("/images/bg.jpg") no-repeat center center/cover;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    font-family: "Manrope", sans-serif;
+}
+
+main {
+    flex: 1;
+}
+
+.firstpage {
+    text-align: center;
+    padding: 4vh 2vw;
+    position: relative;
+}
+
+nav {
+    position: absolute;
+    top: 2vh;
+    right: 3vw;
+}
+
+nav button {
+    padding: 0.8vh 1.8vw;
+    font-size: 1.7vh;
+    border: 0.3vh solid #4da3ff;
+    border-radius: 2.2vh;
+    background-color: white;
+    cursor: pointer;
+}
+
+.logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1vh;
+    margin-top: 27vh;
+}
+
+.logo img {
+    width: 8%;
+}
+
+.logo h1 {
+    font-size: 6.4vh;
+    font-weight: 500;
+}
+
+.try-btn {
+    margin-top: 2vh;
+    padding: 1vh 2vw;
+    margin-bottom: 20.5vh;
+    border-radius: 5.1vh;
+    border: 0.3vh solid #4da3ff;
+    background: transparent;
+    cursor: pointer;
+    font-size: 2.4vh;
+}
+
+.advantages {
+    display: flex;
+    justify-content: space-around;
+    border-top: 0.1vh solid #aaa;
+    border-bottom: 0.1vh solid #aaa;
+    background: rgba(255,255,255,0.6);
+    padding: 2vh 0;
+}
+
+.advantages p {
+    display: flex;
+    align-items: center;
+    gap: 0.8vh;
+    font-size: 2.4vh;
+    margin: 0;
+}
+
+.instruction {
+    margin-top: 10vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2vh;
+}
+
+.step {
+    border: 0.2vh solid #4da3ff;
+    padding: 1vh;
+    text-align: center;
+    width: 20%;
+    background: white;
+}
+
+.step img {
+    width: 100%;
+    height: 25vh;
+    object-fit: contain;
+}
+
+.step p {
+    margin-top: 1vh;
+    font-size: 2.4vh;
+}
+
+.arrow {
+    font-size: 6vh;
+    color: #333;
+}
+
+.description {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 6vh 2vw;
+    text-align: center;
+}
+
+.description h2 {
+    font-size: 2rem;
+    margin-bottom: 2vh;
+    font-weight: 600;
+    color: #222;
+}
+
+.description p {
+    font-size: 1.25rem;
+    line-height: 1.6;
+    max-width: 700px;
+    width: 100%;
+    color: #444;
+    text-align: justify;
+}
+
+
+footer {
+    text-align: center;
+    padding: 1vh;
+    font-size: 1.2vh;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    inset: 0;
+
+    background: rgba(0, 0, 0, 0.5);
+    
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    /* animation */
+    opacity: 0;
+    pointer-events: none;
+    transition: 0.3s;
+}
+
+.modal.active {
+    opacity: 1;
+    pointer-events: all;
+    display: flex;
+}
+
+.modal-content {
+    background: white;
+    padding: 30px;
+    border-radius: 20px;
+    width: 320px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+
+    box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+
+    /* animation */
+    transform: scale(0.8);
+    transition: 0.3s;
+}
+
+.modal.active .modal-content {
+    transform: scale(1);
+}
+
+.error {
+    color: red;
+    margin-top: 10px;
+    font-size: 14px;
+}
+
+.close {
+    align-self: flex-end;
+    cursor: pointer;
+    font-size: 22px;
+}
+
+.modal-content h2 {
+    margin: 0;
+    font-weight: 600;
+}
+
+.modal input {
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+    font-family: 'Manrope', sans-serif;
+}
+
+.submit-btn {
+    padding: 12px;
+    border: none;
+    border-radius: 10px;
+    background: black;
+    color: white;
+    cursor: pointer;
+    font-weight: 500;
+    transition: 0.2s;
+}
+
+.submit-btn:hover {
+    background: #333;
+}
+
+.form {
+    display: none;
+}
+
+.form.active {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.switch {
+    font-size: 14px;
+    text-align: center;
+}
+
+.switch span {
+    color: black;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+/* Animations */
+nav button,
+.try-btn {
+   transition: all 0.25s ease;
+}
+
+nav button:hover,
+.try-btn:hover {
+    transform: translateY(-0.5vh);
+    box-shadow: 0 1vh 2vh rgba(0,0,0,0.2);
+}
+
+nav button:active,
+.try-btn:active {
+    transform: translateY(0);
+    box-shadow: none;
+}

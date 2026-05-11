@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Smart Fridge</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <script src="/js/script.js"></script>
+    <main>
+        <div class="firstpage">
+            <nav>
+                <button name="login" type="button">Log in</button>
+            </nav>
+            <div class="logo">
+                <img src="images/ice.png" alt="Smart fridge logo">
+                <h1>Smart Fridge</h1>
+            </div>
+            <button class="try-btn" type="button">Try it for free</button>
+        </div>
+        <div class="advantages">
+            <p><img src="images/logo1.jpg" alt="economy logo">Time economy</p>
+            <p><img src="images/logo2.jpg" alt="smart logo">Smart menu</p>
+            <p><img src="images/logo3.jpg" alt="recipe logo">Food analysis</p>
+        </div>
+        <div class="instruction">
+            <div class="step">
+                <img src="images/scan.jpg" alt="Scan products">
+                <p>Scan products</p>
+            </div>
+
+            <div class="arrow">→</div>
+        
+            <div class="step">
+                <img src="images/ai.jpg" alt="AI analyzing">
+                <p>AI analyzing</p>
+            </div>
+        
+            <div class="arrow">→</div>
+
+            <div class="step">
+                <img src="images/recept.jpg" alt="Ready recipe">
+                <p>Ready recipe</p>
+            </div>
+        </div>
+        <div class="description">
+            <h2>What is Smart Fridge?</h2>
+            <p>SmartFridge is an app for managing the food in your refrigerator. 
+                You can add and edit your product list, get recipe suggestions 
+                based on available ingredients, and analyze your eating habits.</p>
+        </div>
+    </main>
+
+    <footer>
+        <p>© 2026 Smart Fridge</p>
+    </footer>
+    <div id="modal" class="modal">
+
+    <div class="modal-content">
+        <span class="close">&times;</span>
+
+        <!-- LOGIN -->
+        <form id="login-form" class="form active">
+            <h2>Log in</h2>
+            <input type="email" placeholder="Email">
+            <input type="password" placeholder="Password">
+            <button class="submit-btn">Log in</button>
+            <p id="login-error" class="error"></p>
+
+            <p class="switch">
+                Don’t have an account?
+                <span id="go-register">Sign up</span>
+            </p>
+        </form>
+
+        <!-- REGISTER -->
+        <form id="register-form" class="form">
+            <h2>Sign up</h2>
+            <input type="email" placeholder="Email">
+            <input type="password" placeholder="Password">
+            <input type="password" placeholder="Repeat Password">
+            <button type="submit" class="submit-btn">Create account</button>
+            <p id="register-error" class="error"></p>
+
+            <p class="switch">
+                Already have an account?
+                <span id="go-login">Log in</span>
+            </p>
+        </form>
+
+    </div>
+</div>
+</body>
+</html>
