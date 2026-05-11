@@ -92,7 +92,7 @@ export function showProducts(content, fridgeData, token, editMode = false) {
                         font-size: 15px;
                         gap: 8px;
                     ">
-                        <span>🥦 ${p}</span>
+                        <span>${p}</span>
                         ${editMode ? `
                             <button data-index="${i}" class="remove-btn" style="
                                 background: none;

@@ -50,7 +50,7 @@ export async function showHistory(content, token) {
                                             <div id="tab-products">
                                                 <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(140px, 1fr)); gap:8px;">
                                                     ${h.products.map(p => `
-                                                        <div style="padding:8px 12px; background:#F5FBFF; border:1px solid #D8EEFF; border-radius:10px; font-size:14px;">🥦 ${p}</div>
+                                                        <div style="padding:8px 12px; background:#F5FBFF; border:1px solid #D8EEFF; border-radius:10px; font-size:14px;">${p}</div>
                                                     `).join('')}
                                                 </div>
                                             </div>
