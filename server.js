@@ -22,7 +22,10 @@ app.use('/api/fridge', fridgeRoutes);
 app.use('/', viewRoutes);
 connectDB();
 
-
+// 404 handler
+app.use((req, res) => {
+    res.status(404).sendFile(path.join(__dirname, 'view/public/404.html'));
+});
 
 app.listen(port, () => {
     console.log(`Server is running on port: ${port}`);
