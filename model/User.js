@@ -18,6 +18,23 @@ const userSchema = new mongoose.Schema({
     },
     lastLoginAt: {
         type: Date
+    },
+    profile: {
+        name: { type: String, default: '' },
+        goal: {
+            type: String,
+            enum: ['weight_loss', 'muscle_gain', 'healthy_eating', ''],
+            default: ''
+        },
+        diet: {
+            type: String,
+            enum: ['none', 'vegetarian', 'vegan'],
+            default: 'none'
+        },
+        allergies: {
+            type: [String],
+            default: []
+        }
     }
 }, { timestamps: true });
 

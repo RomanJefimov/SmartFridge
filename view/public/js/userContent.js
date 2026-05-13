@@ -2,6 +2,7 @@ import { showAdminPanel, loadUsers } from './modules/admin.js';
 import { showUploadContent, showProducts } from './modules/fridge.js';
 import { showRecipes } from './modules/recipes.js';
 import { showHistory } from './modules/history.js';
+import { showProfile } from './modules/profile.js';
 
 document.addEventListener("DOMContentLoaded", () => {
     const token = localStorage.getItem('token');
@@ -75,7 +76,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     break;
 
                 case "Personal characteristics":
-                    content.innerHTML = `<div style="padding:32px;"><h1>Personal characteristics</h1><p>User personal information.</p></div>`;
+                    showProfile(content, token);
                     break;
 
                 case "Analysis":

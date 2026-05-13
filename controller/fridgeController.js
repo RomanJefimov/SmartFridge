@@ -1,5 +1,33 @@
 const { GoogleGenAI } = require('@google/genai');
 const FridgeHistory = require('../model/FridgeHistory');
+const User = require('../model/User');
+
+function buildProfileContext(profile) {
+    if (!profile) return '';
+
+    const parts = [];
+
+    if (profile.name) parts.push(`User's name: ${profile.name}.`);
+
+    if (profile.goal) {
+        const goals = {
+            weight_loss: 'weight loss',
+            muscle_gain: 'muscle gain',
+            healthy_eating: 'healthy eating'
+        };
+        parts.push(`Nutrition goal: ${goals[profile.goal] || profile.goal}.`);
+    }
+
+    if (profile.diet && profile.diet !== 'none') {
+        parts.push(`Diet type: ${profile.diet}.`);
+    }
+
+    if (profile.allergies && profile.allergies.length > 0) {
+        parts.push(`Allergies (MUST avoid): ${profile.allergies.join(', ')}.`);
+    }
+
+    return parts.length > 0 ? `\nUser preferences:\n${parts.join('\n')}\nTake these preferences into account when generating recipes and analysis.\n` : '';
+}
 
 exports.analyzeImage = async (req, res) => {
     try {
@@ -7,27 +35,31 @@ exports.analyzeImage = async (req, res) => {
             return res.status(400).json({ message: 'No image uploaded' });
         }
 
+        const user = await User.findById(req.user.id).select('profile');
+        const profileContext = buildProfileContext(user?.profile);
+
         const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
         const prompt = `You are a JSON generator. Analyze this fridge image and respond with ONLY a valid JSON object. No text before or after. No markdown. No backticks. No comments. Just pure JSON.
-            {
-                "products": ["product1", "product2"],
-                "recipes": [
-                    {
-                        "name": "recipe name",
-                        "ingredients": ["ingredient1", "ingredient2"],
-                        "steps": ["step1", "step2"]
-                    }
-                ],
-                "analysis": {
-                    "calories": "low/medium/high",
-                    "proteins": "low/medium/high",
-                    "carbs": "low/medium/high",
-                    "fats": "low/medium/high",
-                    "vegetables": "low/medium/high",
-                    "tip": "one short tip"
-                }
-            }`;
+${profileContext}
+{
+    "products": ["product1", "product2"],
+    "recipes": [
+        {
+            "name": "recipe name",
+            "ingredients": ["ingredient1", "ingredient2"],
+            "steps": ["step1", "step2"]
+        }
+    ],
+    "analysis": {
+        "calories": "low/medium/high",
+        "proteins": "low/medium/high",
+        "carbs": "low/medium/high",
+        "fats": "low/medium/high",
+        "vegetables": "low/medium/high",
+        "tip": "one short tip"
+    }
+}`;
 
         const response = await ai.models.generateContent({
             model: 'gemini-2.5-flash',
@@ -116,18 +148,22 @@ exports.updateRecipes = async (req, res) => {
     try {
         const { id, products } = req.body;
 
+        const user = await User.findById(req.user.id).select('profile');
+        const profileContext = buildProfileContext(user?.profile);
+
         const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
         const prompt = `You are a JSON generator. Based on these products: ${products.join(', ')}.
-            Generate recipes and respond with ONLY a valid JSON array. No text before or after. No markdown. No backticks. Just pure JSON array.
-                
-            [
-                {
-                    "name": "recipe name",
-                    "ingredients": ["ingredient1", "ingredient2"],
-                    "steps": ["step1", "step2"]
-                }
-            ]`;
+${profileContext}
+Generate recipes and respond with ONLY a valid JSON array. No text before or after. No markdown. No backticks. Just pure JSON array.
+
+[
+    {
+        "name": "recipe name",
+        "ingredients": ["ingredient1", "ingredient2"],
+        "steps": ["step1", "step2"]
+    }
+]`;
 
         const response = await ai.models.generateContent({
             model: 'gemini-2.5-flash',

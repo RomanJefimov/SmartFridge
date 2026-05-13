@@ -1,4 +1,4 @@
-export function showUploadContent(content) {
+export function showUploadContent(content, token, onSuccess) {
     content.innerHTML = `
     <div style="width:100%; height:100%; display:flex; flex-direction:column; justify-content:center; align-items:center; gap:22px;">
         <h1 style="font-size:64px; font-weight:400;">Upload Fridge Photo</h1>
@@ -15,10 +15,10 @@ export function showUploadContent(content) {
     </div>
     `;
 
-    document.getElementById('fridge-input').addEventListener('change', (e) => handleImageUpload(e, content));
+    document.getElementById('fridge-input').addEventListener('change', (e) => handleImageUpload(e, token, onSuccess));
 }
 
-async function handleImageUpload(e, content) {
+async function handleImageUpload(e, token, onSuccess) {
     const file = e.target.files[0];
     if (!file) return;
 
@@ -31,7 +31,7 @@ async function handleImageUpload(e, content) {
         <button class="btn" id="analyze-btn">Analyze with AI</button>
     `;
 
-    document.getElementById('analyze-btn').addEventListener('click', () => analyzeImage(file, status));
+    document.getElementById('analyze-btn').addEventListener('click', () => analyzeImage(file, status, token, onSuccess));
 }
 
 export async function analyzeImage(file, status, token, onSuccess) {
@@ -71,8 +71,8 @@ export function showProducts(content, fridgeData, token, editMode = false) {
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
                 <h1 style="font-size:32px; font-weight:700;">List of products</h1>
                 ${editMode
-                    ? `<button class="btn" id="save-btn">✓ Save</button>`
-                    : `<button class="btn" id="edit-btn">✏️ Edit</button>`
+                    ? `<button class="btn" id="save-btn">Save</button>`
+                    : `<button class="btn" id="edit-btn">Edit</button>`
                 }
             </div>
             <div id="products-grid" style="
