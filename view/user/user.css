@@ -261,3 +261,58 @@ footer {
 .logout-btn:hover {
     background: #fff0f0;
 }
+
+@media (max-width: 768px) {
+    #burger-btn {
+        display: block !important;
+    }
+
+    .logo h1 {
+        font-size: 22px;
+    }
+
+    .logo img {
+        width: 40px;
+    }
+
+    nav {
+        position: fixed;
+        top: 75px;
+        left: -274px;
+        height: calc(100vh - 75px);
+        z-index: 100;
+        transition: left 0.3s ease;
+        box-shadow: 2px 0 12px rgba(0,0,0,0.1);
+    }
+
+    nav.open {
+        left: 0;
+    }
+
+    .nav-overlay {
+        display: none;
+        position: fixed;
+        top: 75px;
+        left: 0;
+        width: 100vw;
+        height: calc(100vh - 75px);
+        background: rgba(0,0,0,0.3);
+        z-index: 99;
+    }
+
+    .nav-overlay.open {
+        display: block;
+    }
+
+    .content {
+        width: 100%;
+    }
+
+    .content h1 {
+        font-size: 32px;
+    }
+
+    footer {
+        padding-left: 16px;
+    }
+}

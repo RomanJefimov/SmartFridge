@@ -11,6 +11,15 @@
 </head>
 <body>
     <header>
+        <div style="display:flex; align-items:center; gap:12px;">
+        <button id="burger-btn" style="
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 24px;
+            padding: 4px 8px;
+        ">☰</button>
         <div class="logo">
             <img src="/images/ice.png" alt="Smart fridge logo">
             <h1>Smart Fridge</h1>
@@ -51,6 +60,7 @@
                 Admin panel
             </button>
         </nav>
+        <div class="nav-overlay" id="nav-overlay"></div>
         <div class="content">
             <h1>Fridge is empty</h1>
             <button class="btn">Upload picture <img src="/images/upload_icon.svg" alt="Upload icon"></button>
