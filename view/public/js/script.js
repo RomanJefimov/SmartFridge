@@ -126,7 +126,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 return;
             }
         
-            localStorage.setItem('token', data.token); // 👈 добавил
+            localStorage.setItem('token', data.token); 
             localStorage.setItem('role', data.role);
             localStorage.setItem('email', data.email);
             window.location.href = "/user";

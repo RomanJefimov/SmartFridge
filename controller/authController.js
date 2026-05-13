@@ -15,8 +15,14 @@ exports.register = async (req, res) => {
             return res.status(400).json({ message: 'Invalid email format' });
         }
 
-        if (password.length < 6) {
-            return res.status(400).json({ message: 'Password must be at least 6 characters' });
+        const passwordRegex =
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&.#_-])[A-Za-z\d@$!%*?&.#_-]{8,}$/;
+
+        if (!passwordRegex.test(password)) {
+            return res.status(400).json({
+            message:
+                'Password must be at least 8 characters and include uppercase, lowercase, number and special character'
+            });
         }
 
         const existing = await User.findOne({ email });

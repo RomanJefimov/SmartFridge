@@ -184,6 +184,20 @@ footer {
     transform: scale(1);
 }
 
+.password-hint {
+    margin-top: -4px;
+    margin-bottom: 2px;
+    font-size: 12px;
+    line-height: 1.5;
+    color: #777;
+}
+
+.password-hint span {
+    display: block;
+    color: #555;
+    margin-top: 3px;
+}
+
 .error {
     color: red;
     margin-top: 10px;
