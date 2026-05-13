@@ -275,3 +275,60 @@ nav button:active,
     transform: translateY(0);
     box-shadow: none;
 }
+
+@media (max-width: 768px) {
+
+    .logo {
+        flex-direction: column;
+        margin-top: 10vh;
+    }
+
+    .logo img {
+        width: 30%;
+    }
+
+    .logo h1 {
+        font-size: 4vh;
+    }
+
+    nav {
+        top: 1vh;
+        right: 2vw;
+    }
+
+    nav button {
+        font-size: 12px;
+        padding: 1vh 3vw;
+    }
+
+    .try-btn {
+        font-size: 16px;
+        padding: 1.5vh 6vw;
+    }
+
+    .advantages {
+        flex-direction: column;
+        text-align: center;
+        gap: 2vh;
+    }
+
+    .instruction {
+        flex-direction: column;
+    }
+
+    .step {
+        width: 90%;
+    }
+
+    .arrow {
+        transform: rotate(90deg);
+    }
+
+    .description p {
+        text-align: left;
+    }
+
+    .modal-content {
+        width: 90%;
+    }
+}
