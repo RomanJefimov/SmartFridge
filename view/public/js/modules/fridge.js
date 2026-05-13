@@ -15,7 +15,11 @@ export function showUploadContent(content, token, onSuccess) {
     </div>
     `;
 
-    document.getElementById('fridge-input').addEventListener('change', (e) => handleImageUpload(e, token, onSuccess));
+    document
+        .getElementById('fridge-input')
+        .addEventListener('change', (e) =>
+            handleImageUpload(e, token, onSuccess)
+        );
 }
 
 async function handleImageUpload(e, token, onSuccess) {
@@ -26,12 +30,17 @@ async function handleImageUpload(e, token, onSuccess) {
     const status = document.getElementById('analyze-status');
 
     const url = URL.createObjectURL(file);
+
     preview.innerHTML = `
-        <img src="${url}" style="max-width: 320px; border-radius: 12px; margin-bottom: 16px; display:block;">
+        <img src="${url}" style="max-width:320px; border-radius:12px; margin-bottom:16px; display:block;">
         <button class="btn" id="analyze-btn">Analyze with AI</button>
     `;
 
-    document.getElementById('analyze-btn').addEventListener('click', () => analyzeImage(file, status, token, onSuccess));
+    document
+        .getElementById('analyze-btn')
+        .addEventListener('click', () =>
+            analyzeImage(file, status, token, onSuccess)
+        );
 }
 
 export async function analyzeImage(file, status, token, onSuccess) {
@@ -43,134 +52,296 @@ export async function analyzeImage(file, status, token, onSuccess) {
     try {
         const res = await fetch('/api/fridge/analyze', {
             method: 'POST',
-            headers: { 'Authorization': `Bearer ${token}` },
+            headers: {
+                Authorization: `Bearer ${token}`
+            },
             body: formData
         });
 
         const data = await res.json();
 
         if (!res.ok) {
-            status.textContent = '✗ ' + (data.message || 'Error');
+            status.textContent =
+                '✗ ' + (data.message || 'Error');
             return;
         }
 
         onSuccess(data);
-
     } catch (err) {
         status.style.color = 'red';
-        status.textContent = '✗ Failed to analyze image';
+        status.textContent =
+            '✗ Failed to analyze image';
         console.error(err);
     }
 }
 
-export function showProducts(content, fridgeData, token, editMode = false) {
-    const products = fridgeData.products;
+export function showProducts(
+    content,
+    fridgeData,
+    token,
+    editMode = false,
+    tempProducts = null
+) {
+    const products =
+        tempProducts || [...fridgeData.products];
 
     content.innerHTML = `
-        <div style="width:100%; padding: 32px; box-sizing:border-box;">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
-                <h1 style="font-size:32px; font-weight:700;">List of products</h1>
-                ${editMode
-                    ? `<button class="btn" id="save-btn">Save</button>`
-                    : `<button class="btn" id="edit-btn">Edit</button>`
-                }
-            </div>
-            <div id="products-grid" style="
-                display: grid;
-                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-                gap: 12px;
+        <div style="width:100%; padding:32px; box-sizing:border-box;">
+
+            <div style="
+                display:flex;
+                justify-content:space-between;
+                align-items:center;
+                margin-bottom:24px;
             ">
-                ${products.map((p, i) => `
+                <h1 style="
+                    font-size:32px;
+                    font-weight:700;
+                    margin:0;
+                ">
+                    List of products
+                </h1>
+
+                <div style="
+                    display:flex;
+                    gap:12px;
+                    align-items:center;
+                ">
+                    ${
+                        !editMode
+                            ? `
+                        <button class="btn" id="update-recipes-btn">
+                            🔄 Update recipes
+                        </button>
+                    `
+                            : ''
+                    }
+
+                    ${
+                        editMode
+                            ? `
+                        <button class="btn" id="save-btn">
+                            Save
+                        </button>
+                    `
+                            : `
+                        <button class="btn" id="edit-btn">
+                            Edit
+                        </button>
+                    `
+                    }
+                </div>
+            </div>
+
+            <div id="products-grid" style="
+                display:grid;
+                grid-template-columns:repeat(auto-fill, minmax(160px, 1fr));
+                gap:12px;
+            ">
+                ${products
+                    .map(
+                        (p, i) => `
                     <div style="
-                        display: flex;
-                        align-items: center;
-                        justify-content: space-between;
-                        padding: 12px 16px;
-                        background: #F5FBFF;
-                        border: 1px solid #D8EEFF;
-                        border-radius: 12px;
-                        font-size: 15px;
-                        gap: 8px;
+                        display:flex;
+                        align-items:center;
+                        justify-content:space-between;
+                        padding:12px 16px;
+                        background:#F5FBFF;
+                        border:1px solid #D8EEFF;
+                        border-radius:12px;
+                        font-size:15px;
+                        gap:8px;
                     ">
                         <span>${p}</span>
-                        ${editMode ? `
-                            <button data-index="${i}" class="remove-btn" style="
-                                background: none;
-                                border: none;
-                                color: #ff4646;
-                                cursor: pointer;
-                                font-size: 16px;
-                                padding: 0;
-                                line-height: 1;
-                            ">✕</button>
-                        ` : ''}
+
+                        ${
+                            editMode
+                                ? `
+                            <button
+                                data-index="${i}"
+                                class="remove-btn"
+                                style="
+                                    background:none;
+                                    border:none;
+                                    color:#ff4646;
+                                    cursor:pointer;
+                                    font-size:16px;
+                                    padding:0;
+                                    line-height:1;
+                                "
+                            >
+                                ✕
+                            </button>
+                        `
+                                : ''
+                        }
                     </div>
-                `).join('')}
+                `
+                    )
+                    .join('')}
             </div>
-            <div id="update-recipes-wrap" style="margin-top:24px;"></div>
         </div>
     `;
 
     if (editMode) {
-        document.querySelectorAll('.remove-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const index = parseInt(btn.dataset.index);
-                fridgeData.products.splice(index, 1);
-                showProducts(content, fridgeData, token, true);
-            });
-        });
+        document
+            .querySelectorAll('.remove-btn')
+            .forEach((btn) => {
+                btn.addEventListener('click', () => {
+                    const index = Number(
+                        btn.dataset.index
+                    );
 
-        document.getElementById('save-btn').addEventListener('click', async () => {
-            try {
-                const res = await fetch('/api/fridge/products', {
-                    method: 'PATCH',
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ id: fridgeData._id, products: fridgeData.products })
+                    const updatedProducts = [
+                        ...products
+                    ];
+
+                    updatedProducts.splice(
+                        index,
+                        1
+                    );
+
+                    showProducts(
+                        content,
+                        fridgeData,
+                        token,
+                        true,
+                        updatedProducts
+                    );
                 });
+            });
 
-                if (res.ok) {
-                    showProducts(content, fridgeData, token, false);
-                    document.getElementById('update-recipes-wrap').innerHTML = `
-                        <button class="btn" id="update-recipes-btn">🔄 Update recipes based on new products</button>
-                    `;
-                    document.getElementById('update-recipes-btn').addEventListener('click', () => updateRecipes(fridgeData, token));
+        document
+            .getElementById('save-btn')
+            .addEventListener(
+                'click',
+                async () => {
+                    try {
+                        fridgeData.products = [
+                            ...products
+                        ];
+
+                        const res = await fetch(
+                            '/api/fridge/products',
+                            {
+                                method: 'PATCH',
+                                headers: {
+                                    Authorization: `Bearer ${token}`,
+                                    'Content-Type':
+                                        'application/json'
+                                },
+                                body: JSON.stringify({
+                                    id: fridgeData._id,
+                                    products:
+                                        fridgeData.products
+                                })
+                            }
+                        );
+
+                        if (res.ok) {
+                            showProducts(
+                                content,
+                                fridgeData,
+                                token,
+                                false
+                            );
+                        }
+                    } catch (err) {
+                        console.error(err);
+                    }
                 }
-            } catch (err) {
-                console.error(err);
-            }
-        });
+            );
     } else {
-        document.getElementById('edit-btn').addEventListener('click', () => showProducts(content, fridgeData, token, true));
+        document
+            .getElementById('edit-btn')
+            .addEventListener('click', () => {
+                showProducts(
+                    content,
+                    fridgeData,
+                    token,
+                    true,
+                    [...fridgeData.products]
+                );
+            });
+
+        const updateBtn =
+            document.getElementById(
+                'update-recipes-btn'
+            );
+
+        if (updateBtn) {
+            updateBtn.addEventListener(
+                'click',
+                () => {
+                    updateRecipes(
+                        fridgeData,
+                        token
+                    );
+                }
+            );
+        }
     }
 }
 
-export async function updateRecipes(fridgeData, token) {
-    const wrap = document.getElementById('update-recipes-wrap');
-    wrap.innerHTML = `<p>🔍 Updating recipes...</p>`;
+export async function updateRecipes(
+    fridgeData,
+    token
+) {
+    const updateBtn =
+        document.getElementById(
+            'update-recipes-btn'
+        );
+
+    if (updateBtn) {
+        updateBtn.disabled = true;
+        updateBtn.textContent =
+            '🔍 Updating recipes...';
+    }
 
     try {
-        const res = await fetch('/api/fridge/recipes', {
-            method: 'PATCH',
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ id: fridgeData._id, products: fridgeData.products })
-        });
+        const res = await fetch(
+            '/api/fridge/recipes',
+            {
+                method: 'PATCH',
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type':
+                        'application/json'
+                },
+                body: JSON.stringify({
+                    id: fridgeData._id,
+                    products:
+                        fridgeData.products
+                })
+            }
+        );
 
         const data = await res.json();
 
         if (res.ok) {
-            fridgeData.recipes = data.recipes;
-            wrap.innerHTML = `<p style="color:green;">✓ Recipes updated! Check the Recipes section.</p>`;
+            fridgeData.recipes =
+                data.recipes;
+
+            if (updateBtn) {
+                updateBtn.textContent =
+                    '✓ Recipes updated';
+            }
         } else {
-            wrap.innerHTML = `<p style="color:red;">✗ Failed to update recipes.</p>`;
+            if (updateBtn) {
+                updateBtn.textContent =
+                    '✗ Failed';
+                updateBtn.disabled =
+                    false;
+            }
         }
     } catch (err) {
-        wrap.innerHTML = `<p style="color:red;">✗ Error updating recipes.</p>`;
         console.error(err);
+
+        if (updateBtn) {
+            updateBtn.textContent =
+                '✗ Error';
+            updateBtn.disabled =
+                false;
+        }
     }
 }
