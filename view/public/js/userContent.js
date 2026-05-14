@@ -32,6 +32,50 @@ document.addEventListener("DOMContentLoaded", () => {
 
     loadLatest();
 
+async function loadNotifications() {
+    try {
+        const res = await fetch('/api/fridge/notifications', {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+        const data = await res.json();
+        const notifications = data.notifications || [];
+
+        const badge = document.getElementById('notif-badge');
+        const list  = document.getElementById('notif-list');
+
+        if (notifications.length > 0) {
+            badge.style.display = 'block';
+            badge.textContent = notifications.length;
+            list.innerHTML = notifications.map(n => `
+                <div class="notif-item">
+                    <span style="font-size:20px;">${n.status === 'expired' ? '🚨' : '⚠️'}</span>
+                    <span>${n.message}</span>
+                </div>
+            `).join('');
+        } else {
+            badge.style.display = 'none';
+            list.innerHTML = `<div class="notif-empty">No notifications</div>`;
+        }
+    } catch (err) {
+        console.error(err);
+    }
+}
+
+loadNotifications();
+setInterval(loadNotifications, 10 * 60 * 1000);
+
+const bellBtn = document.getElementById('bellBtn');
+const notifDropdown = document.getElementById('notif-dropdown');
+
+bellBtn.addEventListener('click', e => {
+    e.stopPropagation();
+    notifDropdown.style.display = notifDropdown.style.display === 'none' ? 'block' : 'none';
+});
+
+document.addEventListener('click', () => {
+    notifDropdown.style.display = 'none';
+});
+
     const adminPanel = document.querySelector('.admin-panel');
     if (role === 'admin') adminPanel.style.display = 'flex';
 

@@ -262,6 +262,80 @@ footer {
     background: #fff0f0;
 }
 
+.notification-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+#bellBtn {
+    width: 28px;
+    height: 28px;
+}
+
+#notif-badge {
+    display: none;
+    position: absolute;
+    top: -4px;
+    right: -6px;
+    background: #ff4646;
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    border-radius: 50%;
+    width: 16px;
+    height: 16px;
+    line-height: 16px;
+    text-align: center;
+}
+
+#notif-dropdown {
+    display: none;
+    position: absolute;
+    top: 48px;
+    right: 0;
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+    min-width: 280px;
+    z-index: 1000;
+    padding: 12px 0;
+}
+
+.notif-header {
+    padding: 8px 16px 12px;
+    font-weight: 700;
+    font-size: 15px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+#notif-list {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.notif-item {
+    padding: 12px 16px;
+    border-bottom: 1px solid #f5f5f5;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+}
+
+.notif-item:last-child {
+    border-bottom: none;
+}
+
+.notif-empty {
+    padding: 16px;
+    color: #888;
+    font-size: 14px;
+    text-align: center;
+}
+
 @media (max-width: 768px) {
     #burger-btn {
         display: block !important;

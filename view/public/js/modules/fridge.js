@@ -75,210 +75,150 @@ export async function analyzeImage(file, status, token, onSuccess) {
     }
 }
 
-export function showProducts(
-    content,
-    fridgeData,
-    token,
-    editMode = false,
-    tempProducts = null
-) {
-    const products =
-        tempProducts || [...fridgeData.products];
+export function showProducts(content, fridgeData, token, editMode = false, tempProducts = null) {
+    const raw = tempProducts || fridgeData.products || [];
+    const products = raw.map(p =>
+        typeof p === 'string' ? { name: p, expiryDate: null } : { ...p }
+    );
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    function getExpiryStatus(expiryDate) {
+        if (!expiryDate) return null;
+        const exp = new Date(expiryDate);
+        exp.setHours(0, 0, 0, 0);
+        const diffDays = Math.ceil((exp - today) / (1000 * 60 * 60 * 24));
+        if (diffDays < 0) return 'expired';
+        if (diffDays <= 1) return 'expiring';
+        return 'ok';
+    }
+
+    function cardStyle(status) {
+        if (status === 'expired')  return 'background:#FFF0F0; border:1px solid #FFB0B0;';
+        if (status === 'expiring') return 'background:#FFFBF0; border:1px solid #FFE08A;';
+        return 'background:#F5FBFF; border:1px solid #D8EEFF;';
+    }
 
     content.innerHTML = `
         <div style="width:100%; padding:32px; box-sizing:border-box;">
-
-            <div style="
-                display:flex;
-                justify-content:space-between;
-                align-items:center;
-                margin-bottom:24px;
-            ">
-                <h1 style="
-                    font-size:32px;
-                    font-weight:700;
-                    margin:0;
-                ">
-                    List of products
-                </h1>
-
-                <div style="
-                    display:flex;
-                    gap:12px;
-                    align-items:center;
-                ">
-                    ${
-                        !editMode
-                            ? `
-                        <button class="btn" id="update-recipes-btn">
-                            🔄 Update recipes
-                        </button>
-                    `
-                            : ''
-                    }
-
-                    ${
-                        editMode
-                            ? `
-                        <button class="btn" id="save-btn">
-                            Save
-                        </button>
-                    `
-                            : `
-                        <button class="btn" id="edit-btn">
-                            Edit
-                        </button>
-                    `
-                    }
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
+                <h1 style="font-size:32px; font-weight:700; margin:0;">List of products</h1>
+                <div style="display:flex; gap:12px; align-items:center;">
+                    ${!editMode ? `<button class="btn" id="update-recipes-btn">🔄 Update recipes</button>` : ''}
+                    ${editMode
+                        ? `<button class="btn" id="save-btn">Save</button>`
+                        : `<button class="btn" id="edit-btn">Edit</button>`}
                 </div>
             </div>
 
             <div id="products-grid" style="
                 display:grid;
-                grid-template-columns:repeat(auto-fill, minmax(160px, 1fr));
+                grid-template-columns:repeat(auto-fill, minmax(200px, 1fr));
                 gap:12px;
             ">
-                ${products
-                    .map(
-                        (p, i) => `
+                ${products.map((p, i) => {
+                    const status = getExpiryStatus(p.expiryDate);
+                    const expFormatted = p.expiryDate
+                        ? new Date(p.expiryDate).toISOString().split('T')[0]
+                        : '';
+                    const badge = status === 'expired'
+                        ? `<span style="font-size:11px; color:#ff4646; font-weight:600;">Expired</span>`
+                        : status === 'expiring'
+                        ? `<span style="font-size:11px; color:#e6a817; font-weight:600;">Expires soon</span>`
+                        : '';
+
+                    return `
                     <div style="
                         display:flex;
-                        align-items:center;
-                        justify-content:space-between;
+                        flex-direction:column;
+                        gap:6px;
                         padding:12px 16px;
-                        background:#F5FBFF;
-                        border:1px solid #D8EEFF;
+                        ${cardStyle(status)}
                         border-radius:12px;
                         font-size:15px;
-                        gap:8px;
                     ">
-                        <span>${p}</span>
-
-                        ${
-                            editMode
-                                ? `
-                            <button
+                        <div style="display:flex; align-items:center; justify-content:space-between;">
+                            <span style="font-weight:600;">${p.name}</span>
+                            ${editMode ? `
+                                <button data-index="${i}" class="remove-btn" style="
+                                    background:none; border:none; color:#ff4646;
+                                    cursor:pointer; font-size:16px; padding:0; line-height:1;
+                                ">✕</button>` : ''}
+                        </div>
+                        ${editMode ? `
+                            <input
+                                type="date"
                                 data-index="${i}"
-                                class="remove-btn"
+                                class="expiry-input"
+                                value="${expFormatted}"
                                 style="
-                                    background:none;
-                                    border:none;
-                                    color:#ff4646;
-                                    cursor:pointer;
-                                    font-size:16px;
-                                    padding:0;
-                                    line-height:1;
+                                    font-size:13px;
+                                    border:1px solid #cce4ff;
+                                    border-radius:8px;
+                                    padding:4px 8px;
+                                    color:#555;
+                                    width:100%;
+                                    box-sizing:border-box;
                                 "
                             >
-                                ✕
-                            </button>
-                        `
-                                : ''
-                        }
-                    </div>
-                `
-                    )
-                    .join('')}
+                        ` : `
+                            <span style="font-size:12px; color:#888;">
+                                ${p.expiryDate ? '📅 ' + new Date(p.expiryDate).toLocaleDateString() : '<span style="color:#bbb;">No expiry set</span>'}
+                            </span>
+                            ${badge}
+                        `}
+                    </div>`;
+                }).join('')}
             </div>
         </div>
     `;
 
     if (editMode) {
-        document
-            .querySelectorAll('.remove-btn')
-            .forEach((btn) => {
-                btn.addEventListener('click', () => {
-                    const index = Number(
-                        btn.dataset.index
-                    );
+        document.querySelectorAll('.remove-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const updated = [...products];
+                updated.splice(Number(btn.dataset.index), 1);
+                showProducts(content, fridgeData, token, true, updated);
+            });
+        });
 
-                    const updatedProducts = [
-                        ...products
-                    ];
+        document.getElementById('save-btn').addEventListener('click', async () => {
+            const updatedProducts = products.map((p, i) => {
+                const input = document.querySelector(`.expiry-input[data-index="${i}"]`);
+                return {
+                    name: p.name,
+                    expiryDate: input && input.value ? input.value : null
+                };
+            });
 
-                    updatedProducts.splice(
-                        index,
-                        1
-                    );
-
-                    showProducts(
-                        content,
-                        fridgeData,
-                        token,
-                        true,
-                        updatedProducts
-                    );
+            try {
+                const res = await fetch('/api/fridge/products', {
+                    method: 'PATCH',
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ id: fridgeData._id, products: updatedProducts })
                 });
-            });
 
-        document
-            .getElementById('save-btn')
-            .addEventListener(
-                'click',
-                async () => {
-                    try {
-                        fridgeData.products = [
-                            ...products
-                        ];
-
-                        const res = await fetch(
-                            '/api/fridge/products',
-                            {
-                                method: 'PATCH',
-                                headers: {
-                                    Authorization: `Bearer ${token}`,
-                                    'Content-Type':
-                                        'application/json'
-                                },
-                                body: JSON.stringify({
-                                    id: fridgeData._id,
-                                    products:
-                                        fridgeData.products
-                                })
-                            }
-                        );
-
-                        if (res.ok) {
-                            showProducts(
-                                content,
-                                fridgeData,
-                                token,
-                                false
-                            );
-                        }
-                    } catch (err) {
-                        console.error(err);
-                    }
+                if (res.ok) {
+                    fridgeData.products = updatedProducts;
+                    showProducts(content, fridgeData, token, false);
                 }
-            );
+            } catch (err) {
+                console.error(err);
+            }
+        });
+
     } else {
-        document
-            .getElementById('edit-btn')
-            .addEventListener('click', () => {
-                showProducts(
-                    content,
-                    fridgeData,
-                    token,
-                    true,
-                    [...fridgeData.products]
-                );
-            });
+        document.getElementById('edit-btn').addEventListener('click', () => {
+            showProducts(content, fridgeData, token, true, [...fridgeData.products]);
+        });
 
-        const updateBtn =
-            document.getElementById(
-                'update-recipes-btn'
-            );
-
+        const updateBtn = document.getElementById('update-recipes-btn');
         if (updateBtn) {
-            updateBtn.addEventListener(
-                'click',
-                () => {
-                    updateRecipes(
-                        fridgeData,
-                        token
-                    );
-                }
-            );
+            updateBtn.addEventListener('click', () => updateRecipes(fridgeData, token));
         }
     }
 }

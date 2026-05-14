@@ -33,7 +33,7 @@ export async function showHistory(content, token) {
                                     ">
                                         <div>
                                             <div style="font-weight:700; font-size:15px;">🧊 ${new Date(h.createdAt).toLocaleString()}</div>
-                                            <div style="font-size:13px; color:#888; margin-top:4px;">${h.products.slice(0, 5).join(', ')}${h.products.length > 5 ? '...' : ''}</div>
+                                            <div style="font-size:13px; color:#888; margin-top:4px;">${h.products.slice(0, 5).map(p => p.name || p).join(', ')}${h.products.length > 5 ? '...' : ''}</div>
                                         </div>
                                         <div style="display:flex; align-items:center; gap:12px;">
                                             <span style="font-size:13px; color:#009FE3; font-weight:600;">${h.products.length} products</span>
@@ -50,7 +50,7 @@ export async function showHistory(content, token) {
                                             <div id="tab-products">
                                                 <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(140px, 1fr)); gap:8px;">
                                                     ${h.products.map(p => `
-                                                        <div style="padding:8px 12px; background:#F5FBFF; border:1px solid #D8EEFF; border-radius:10px; font-size:14px;">${p}</div>
+                                                        <div style="padding:8px 12px; background:#F5FBFF; border:1px solid #D8EEFF; border-radius:10px; font-size:14px;">${p.name || p}</div>
                                                     `).join('')}
                                                 </div>
                                             </div>

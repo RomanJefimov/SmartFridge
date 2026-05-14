@@ -6,7 +6,12 @@ const fridgeHistorySchema = new mongoose.Schema({
         ref: 'User',
         required: true
     },
-    products: [String],
+    products: [
+        {
+            name: { type: String, required: true },
+            expiryDate: { type: Date, default: null }
+        }
+    ],
     recipes: [
         {
             name: String,

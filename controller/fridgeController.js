@@ -88,7 +88,7 @@ ${profileContext}
 
         await FridgeHistory.create({
             userId: req.user.id,
-            products: data.products,
+            products: data.products.map(name => ({ name, expiryDate: null })),
             recipes: data.recipes,
             analysis: data.analysis
         });
@@ -153,17 +153,18 @@ exports.updateRecipes = async (req, res) => {
 
         const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
-        const prompt = `You are a JSON generator. Based on these products: ${products.join(', ')}.
-${profileContext}
-Generate recipes and respond with ONLY a valid JSON array. No text before or after. No markdown. No backticks. Just pure JSON array.
+        const productNames = products.map(p => typeof p === 'string' ? p : p.name);
+        const prompt = `You are a JSON generator. Based on these products: ${productNames.join(', ')}.
+            ${profileContext}
+            Generate recipes and respond with ONLY a valid JSON array. No text before or after. No markdown. No backticks. Just pure JSON array.
 
-[
-    {
-        "name": "recipe name",
-        "ingredients": ["ingredient1", "ingredient2"],
-        "steps": ["step1", "step2"]
-    }
-]`;
+            [
+                {
+                    "name": "recipe name",
+                    "ingredients": ["ingredient1", "ingredient2"],
+                    "steps": ["step1", "step2"]
+                }
+            ]`;
 
         const response = await ai.models.generateContent({
             model: 'gemini-2.5-flash',
@@ -192,5 +193,38 @@ Generate recipes and respond with ONLY a valid JSON array. No text before or aft
     } catch (error) {
         console.error('UPDATE RECIPES ERROR:', error);
         res.status(500).json({ message: 'Server error' });
+    }
+};
+
+exports.getNotifications = async (req, res) => {
+    try {
+        const latest = await FridgeHistory.findOne({ userId: req.user.id })
+            .sort({ createdAt: -1 });
+        if (!latest) return res.json({ notifications: [] });
+        const now = new Date();
+        const notifications = [];
+        for (const product of latest.products) {
+            if (!product.expiryDate) continue;
+            const expiry = new Date(product.expiryDate);
+            const diffMs = expiry - now;
+            const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+            if (diffDays < 0) {
+                notifications.push({
+                    name: product.name,
+                    status: 'expired',
+                    message: `${product.name} has expired!`
+                });
+            } else if (diffDays <= 1) {
+                notifications.push({
+                    name: product.name,
+                    status: 'expiring',
+                    message: `${product.name} expires tomorrow!`
+                });
+            }
+        }
+        res.json({ notifications });
+    } catch (error) {
+        console.error('NOTIFICATIONS ERROR:', error);
+        res.status(500).json({ message: 'Failed to get notifications' });
     }
 };
