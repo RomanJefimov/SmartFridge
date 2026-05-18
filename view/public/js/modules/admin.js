@@ -74,8 +74,9 @@ export async function loadUsers(token, email) {
                 <tbody>
                     ${users.map(u => `
                         <tr id="row-${u._id}">
-                            <td>${u.email}</td>
-                            <td>
+                            <td data-label="Email">${u.email}</td>
+                                        
+                            <td data-label="Role">
                                 <select class="role-select" data-id="${u._id}" data-email="${u.email}" style="
                                     padding: 2px 8px;
                                     border-radius: 20px;
@@ -91,19 +92,18 @@ export async function loadUsers(token, email) {
                                     <option value="admin" ${u.role === 'admin' ? 'selected' : ''}>admin</option>
                                 </select>
                             </td>
-                            <td>${u.lastLoginAt ? new Date(u.lastLoginAt).toLocaleString() : '—'}</td>
-                            <td>${new Date(u.createdAt).toLocaleDateString()}</td>
-                            <td style="display:flex; gap:8px; align-items:center;">
+                                        
+                            <td data-label="Last Login">
+                                ${u.lastLoginAt ? new Date(u.lastLoginAt).toLocaleString() : '—'}
+                            </td>
+                                        
+                            <td data-label="Registered">
+                                ${new Date(u.createdAt).toLocaleDateString()}
+                            </td>
+                                        
+                            <td data-label="Action" style="display:flex; gap:8px; align-items:center;">
                                 ${u.email !== email ? `
-                                    <button class="btn-change-password" data-id="${u._id}" data-email="${u.email}" style="
-                                        background:rgba(80,170,255,0.12);
-                                        color:#009FE3;
-                                        border:1px solid rgba(80,170,255,0.3);
-                                        padding:4px 14px;
-                                        border-radius:6px;
-                                        font-size:13px;
-                                        cursor:pointer;
-                                    ">Password</button>
+                                    <button class="btn-change-password" data-id="${u._id}" data-email="${u.email}">Password</button>
                                     <button class="btn-delete" data-id="${u._id}" data-email="${u.email}">Delete</button>
                                 ` : '<span style="color:#888;font-size:13px;">You</span>'}
                             </td>
