@@ -32,6 +32,10 @@ app.use((req, res) => {
     res.status(404).sendFile(path.join(__dirname, 'view/public/404.html'));
 });
 
-app.listen(port, () => {
-    console.log(`Server is running on port: ${port}`);
-});
+if (require.main === module) {
+    app.listen(port, () => {
+        console.log(`Server is running on port: ${port}`);
+    });
+}
+
+module.exports = app;
