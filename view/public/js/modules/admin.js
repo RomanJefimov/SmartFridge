@@ -91,8 +91,17 @@ export async function loadUsers(token, email) {
                             </td>
                             <td>${u.lastLoginAt ? new Date(u.lastLoginAt).toLocaleString() : '—'}</td>
                             <td>${new Date(u.createdAt).toLocaleDateString()}</td>
-                            <td style="display:flex; gap:8px;">
+                            <td style="display:flex; gap:8px; align-items:center;">
                                 ${u.email !== email ? `
+                                    <button class="btn-change-password" data-id="${u._id}" data-email="${u.email}" style="
+                                        background:rgba(80,170,255,0.12);
+                                        color:#009FE3;
+                                        border:1px solid rgba(80,170,255,0.3);
+                                        padding:4px 14px;
+                                        border-radius:6px;
+                                        font-size:13px;
+                                        cursor:pointer;
+                                    ">Password</button>
                                     <button class="btn-delete" data-id="${u._id}" data-email="${u.email}">Delete</button>
                                 ` : '<span style="color:#888;font-size:13px;">You</span>'}
                             </td>
@@ -110,6 +119,10 @@ export async function loadUsers(token, email) {
 
         document.querySelectorAll('.btn-delete').forEach(btn => {
             btn.addEventListener('click', () => deleteUser(btn.dataset.id, btn.dataset.email, token, email));
+        });
+
+        document.querySelectorAll('.btn-change-password').forEach(btn => {
+            btn.addEventListener('click', () => changePassword(btn.dataset.id, btn.dataset.email, token, email));
         });
 
         document.getElementById('create-user-submit').addEventListener('click', () => {
@@ -226,4 +239,28 @@ export async function deleteUser(id, userEmail, token, email) {
         status.textContent = '✗ Failed to delete user.';
         console.error(err);
     }
+}
+
+export async function changePassword(id, userEmail, token, email) {
+    const newPassword = prompt(`New password for "${userEmail}":`);
+    if (!newPassword) return;
+
+    if (newPassword.length < 8) {
+    alert('Password must be at least 8 characters');
+    return;
+    }
+    if (!/[A-Z]/.test(newPassword)) {
+        alert('Password must contain at least one uppercase letter');
+        return;
+    }
+    if (!/[a-z]/.test(newPassword)) {
+        alert('Password must contain at least one lowercase letter');
+        return;
+    }
+    if (!/[^A-Za-z0-9]/.test(newPassword)) {
+        alert('Password must contain at least one special character');
+        return;
+    }
+
+    await updateUser(id, { password: newPassword }, token, email);
 }
