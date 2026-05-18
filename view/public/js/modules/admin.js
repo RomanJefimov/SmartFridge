@@ -1,3 +1,4 @@
+// Admin panel frontend logic for managing users, including loading users, creating new users, updating roles, changing passwords, and deleting users.
 export async function showAdminPanel(content, loadUsersFn) {
     content.innerHTML = `
         <div style="width:100%; padding:32px; box-sizing:border-box;">
@@ -39,6 +40,7 @@ export async function showAdminPanel(content, loadUsersFn) {
     await loadUsersFn();
 }
 
+// Function to load users from the server and display them in a table, with options to change roles, passwords, and delete users.
 export async function loadUsers(token, email) {
     const wrap = document.getElementById('users-table-wrap');
     try {
@@ -135,6 +137,7 @@ export async function loadUsers(token, email) {
     }
 }
 
+// Function to create a new user by sending a POST request to the server, with error handling and form validation.
 export async function createUser(token, email) {
     const newEmail = document.getElementById('new-email').value.trim();
     const newPassword = document.getElementById('new-password').value;
@@ -177,6 +180,7 @@ export async function createUser(token, email) {
     }
 }
 
+// Function to update a user's role or password by sending a PATCH request to the server, with error handling and validation to prevent self-demotion.
 export async function updateUser(id, updates, token, email) {
     const status = document.getElementById('admin-status');
 
@@ -207,6 +211,7 @@ export async function updateUser(id, updates, token, email) {
     }
 }
 
+// Function to delete a user by sending a DELETE request to the server, with a confirmation prompt and error handling.
 export async function deleteUser(id, userEmail, token, email) {
     const confirmed = confirm(`Delete user "${userEmail}"? This cannot be undone.`);
     if (!confirmed) return;
@@ -241,6 +246,7 @@ export async function deleteUser(id, userEmail, token, email) {
     }
 }
 
+// Function to change a user's password by prompting for a new password, validating it, and sending an update request to the server.
 export async function changePassword(id, userEmail, token, email) {
     const newPassword = prompt(`New password for "${userEmail}":`);
     if (!newPassword) return;

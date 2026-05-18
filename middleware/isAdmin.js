@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 
+// Middleware to check if the user is an admin
 module.exports = (req, res, next) => {
     const authHeader = req.headers.authorization;
 

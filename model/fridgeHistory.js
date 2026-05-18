@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 
+// FridgeHistory model to store user's fridge history, including products, recipes, and analysis
 const fridgeHistorySchema = new mongoose.Schema({
     userId: {
         type: mongoose.Schema.Types.ObjectId,

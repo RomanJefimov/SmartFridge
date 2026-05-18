@@ -1,5 +1,6 @@
 import { renderRecipeSlide, attachRecipeSlider } from './recipes.js';
 
+// Frontend logic for the history feature, including fetching and displaying the user's fridge history, showing details for each entry, and allowing the user to view products, recipes, and analysis for each historical entry.
 export async function showHistory(content, token) {
     content.innerHTML = `<div style="width:100%; padding:32px; box-sizing:border-box;"><h1 style="font-size:32px; font-weight:700; margin-bottom:24px;">History</h1><p>Loading...</p></div>`;
 
@@ -14,6 +15,7 @@ export async function showHistory(content, token) {
             return;
         }
 
+        // Function to render the history entries, allowing the user to click on each entry to view more details such as products, recipes, and analysis. The function also handles tab switching within each entry to show different types of information.
         function renderHistory(openId = null) {
             content.innerHTML = `
                 <div style="width:100%; padding:32px; box-sizing:border-box; overflow-y:auto;">

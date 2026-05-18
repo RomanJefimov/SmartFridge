@@ -6,6 +6,7 @@ const { analyzeImage, getHistory, getLatest, updateProducts, updateRecipes, getN
 
 const upload = multer({ storage: multer.memoryStorage() });
 
+// Fridge routes for analyzing images, retrieving history, and updating products and recipes
 router.post('/analyze', protect, upload.single('image'), analyzeImage);
 router.get('/history', protect, getHistory);
 router.get('/latest', protect, getLatest);

@@ -2,6 +2,7 @@ const { GoogleGenAI } = require('@google/genai');
 const FridgeHistory = require('../model/FridgeHistory');
 const User = require('../model/User');
 
+// Fridge controller for handling fridge-related operations such as analyzing uploaded images of the fridge contents, generating recipes based on the detected products, and managing the user's fridge history. The analyzeImage endpoint processes the uploaded image using Google Gemini AI to extract product information, generate recipes, and provide nutritional analysis, while also taking into account the user's profile preferences. The history endpoints allow users to view their past fridge analyses and update product information as needed.
 function buildProfileContext(profile) {
     if (!profile) return '';
 
@@ -29,6 +30,7 @@ function buildProfileContext(profile) {
     return parts.length > 0 ? `\nUser preferences:\n${parts.join('\n')}\nTake these preferences into account when generating recipes and analysis.\n` : '';
 }
 
+// Analyze the uploaded fridge image, extract product information, generate recipes, and provide nutritional analysis using Google Gemini AI. The endpoint expects an image file upload and uses the user's profile information to generate more personalized results. The extracted data is stored in the FridgeHistory collection for future reference.
 exports.analyzeImage = async (req, res) => {
     try {
         if (!req.file) {
@@ -101,6 +103,7 @@ ${profileContext}
     }
 };
 
+// Get the user's fridge history, including past products, recipes, and analysis. The endpoint retrieves all entries from the FridgeHistory collection for the authenticated user, sorted by creation date in descending order, allowing the user to review their past fridge analyses and generated recipes.
 exports.getHistory = async (req, res) => {
     try {
         const history = await FridgeHistory.find({ userId: req.user.id })
@@ -112,6 +115,7 @@ exports.getHistory = async (req, res) => {
     }
 };
 
+// Get the latest fridge history entry for the user. This endpoint retrieves the most recent entry from the FridgeHistory collection for the authenticated user, allowing the user to quickly access their latest fridge analysis and generated recipes.
 exports.getLatest = async (req, res) => {
     try {
         const latest = await FridgeHistory.findOne({ userId: req.user.id })
@@ -123,6 +127,7 @@ exports.getLatest = async (req, res) => {
     }
 };
 
+// Update the products for a specific fridge history entry. This endpoint allows the user to update the list of products for a given entry in their fridge history, which can be useful if the AI's initial product detection was inaccurate or if the user wants to add expiry dates for better tracking.
 exports.updateProducts = async (req, res) => {
     try {
         const { id, products } = req.body;
@@ -144,6 +149,7 @@ exports.updateProducts = async (req, res) => {
     }
 };
 
+// Update the recipes for a specific fridge history entry by re-analyzing the products with Google Gemini AI. This endpoint allows the user to generate new recipes based on the updated list of products, taking into account their profile preferences for more personalized results.
 exports.updateRecipes = async (req, res) => {
     try {
         const { id, products } = req.body;
@@ -196,6 +202,7 @@ exports.updateRecipes = async (req, res) => {
     }
 };
 
+// Get notifications for products that are expiring soon or have already expired based on the latest fridge history entry. This endpoint checks the expiry dates of the products in the most recent fridge history entry and returns notifications for any products that are expiring within the next day or have already expired, helping users stay informed about their fridge contents.
 exports.getNotifications = async (req, res) => {
     try {
         const latest = await FridgeHistory.findOne({ userId: req.user.id })

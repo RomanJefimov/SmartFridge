@@ -1,5 +1,6 @@
 const User = require('../model/User');
 
+// Profile controller for handling user profile related operations
 exports.getProfile = async (req, res) => {
     try {
         const user = await User.findById(req.user.id).select('email profile');
@@ -11,6 +12,7 @@ exports.getProfile = async (req, res) => {
     }
 };
 
+// Update user profile
 exports.updateProfile = async (req, res) => {
     try {
         const { name, goal, diet, allergies } = req.body;

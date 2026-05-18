@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 
+// User model to store user information, including email, password hash, role, and profile details
 const userSchema = new mongoose.Schema({
     email: {
         type: String,

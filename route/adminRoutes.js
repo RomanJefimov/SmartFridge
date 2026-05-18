@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
+// Admin routes for managing users and other administrative tasks
 const isAdmin = require('../middleware/isAdmin');
 const { getUsers, createUser, updateUser, deleteUser } = require('../controller/adminController');
 

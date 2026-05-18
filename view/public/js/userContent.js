@@ -18,6 +18,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let fridgeData = null;
 
+    // Function to load the latest fridge data from the server when the user logs in, and store it in a variable for use across different sections of the user interface. This function is called on page load to ensure that the user sees their most recent fridge information.
     async function loadLatest() {
         try {
             const res = await fetch('/api/fridge/latest', {
@@ -32,53 +33,55 @@ document.addEventListener("DOMContentLoaded", () => {
 
     loadLatest();
 
-async function loadNotifications() {
-    try {
-        const res = await fetch('/api/fridge/notifications', {
-            headers: { Authorization: `Bearer ${token}` }
-        });
-        const data = await res.json();
-        const notifications = data.notifications || [];
+    // Function to load the latest fridge data from the server when the user logs in, and store it in a variable for use across different sections of the user interface. This function is called on page load to ensure that the user sees their most recent fridge information.
+    async function loadNotifications() {
+        try {
+            const res = await fetch('/api/fridge/notifications', {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            const data = await res.json();
+            const notifications = data.notifications || [];
 
-        const badge = document.getElementById('notif-badge');
-        const list  = document.getElementById('notif-list');
+            const badge = document.getElementById('notif-badge');
+            const list  = document.getElementById('notif-list');
 
-        if (notifications.length > 0) {
-            badge.style.display = 'block';
-            badge.textContent = notifications.length;
-            list.innerHTML = notifications.map(n => `
-                <div class="notif-item">
-                    <span style="font-size:20px;">${n.status === 'expired' ? '🚨' : '⚠️'}</span>
-                    <span>${n.message}</span>
-                </div>
-            `).join('');
-        } else {
-            badge.style.display = 'none';
-            list.innerHTML = `<div class="notif-empty">No notifications</div>`;
+            if (notifications.length > 0) {
+                badge.style.display = 'block';
+                badge.textContent = notifications.length;
+                list.innerHTML = notifications.map(n => `
+                    <div class="notif-item">
+                        <span style="font-size:20px;">${n.status === 'expired' ? '🚨' : '⚠️'}</span>
+                        <span>${n.message}</span>
+                    </div>
+                `).join('');
+            } else {
+                badge.style.display = 'none';
+                list.innerHTML = `<div class="notif-empty">No notifications</div>`;
+            }
+        } catch (err) {
+            console.error(err);
         }
-    } catch (err) {
-        console.error(err);
     }
-}
 
-loadNotifications();
-setInterval(loadNotifications, 10 * 60 * 1000);
+    loadNotifications();
+    setInterval(loadNotifications, 10 * 60 * 1000);
 
-const bellBtn = document.getElementById('bellBtn');
-const notifDropdown = document.getElementById('notif-dropdown');
+    const bellBtn = document.getElementById('bellBtn');
+    const notifDropdown = document.getElementById('notif-dropdown');
 
-bellBtn.addEventListener('click', e => {
-    e.stopPropagation();
-    notifDropdown.style.display = notifDropdown.style.display === 'none' ? 'block' : 'none';
-});
+    bellBtn.addEventListener('click', e => {
+        e.stopPropagation();
+        notifDropdown.style.display = notifDropdown.style.display === 'none' ? 'block' : 'none';
+    });
 
-document.addEventListener('click', () => {
-    notifDropdown.style.display = 'none';
-});
+    document.addEventListener('click', () => {
+        notifDropdown.style.display = 'none';
+    });
 
     const adminPanel = document.querySelector('.admin-panel');
     if (role === 'admin') adminPanel.style.display = 'flex';
 
+    // Function to set the active menu item and render the corresponding content when a user clicks on a menu item. This function also saves the active section in local storage so that it can be restored on page reload, providing a seamless user experience.
     function setActive(element) {
         menuItems.forEach(item => item.classList.remove("active"));
         element.classList.add("active");

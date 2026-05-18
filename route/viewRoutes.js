@@ -3,6 +3,7 @@ const path = require('path');
 
 const router = express.Router();
 
+// View routes for serving the main index page and user dashboard
 router.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '../view/public/index.html'));
 });

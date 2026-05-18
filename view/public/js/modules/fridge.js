@@ -1,3 +1,4 @@
+// Frontend logic for the fridge feature, including showing the upload interface, handling image uploads, analyzing the image with AI, displaying the list of products, and updating recipes based on the fridge contents.
 export function showUploadContent(content, token, onSuccess) {
     content.innerHTML = `
     <div style="width:100%; height:100%; display:flex; flex-direction:column; justify-content:center; align-items:center; gap:22px;">
@@ -22,6 +23,7 @@ export function showUploadContent(content, token, onSuccess) {
         );
 }
 
+// Helper function to build a context string based on the user's profile information, which can be included in the AI prompt for more personalized analysis and recipe generation.
 async function handleImageUpload(e, token, onSuccess) {
     const file = e.target.files[0];
     if (!file) return;
@@ -43,6 +45,7 @@ async function handleImageUpload(e, token, onSuccess) {
         );
 }
 
+// Function to build a context string for the AI prompt based on the user's profile information, such as name, nutrition goals, diet type, and allergies. This context can help the AI generate more personalized recipes and analysis.
 export async function analyzeImage(file, status, token, onSuccess) {
     status.textContent = '🔍 Analyzing your fridge...';
 
@@ -75,6 +78,7 @@ export async function analyzeImage(file, status, token, onSuccess) {
     }
 }
 
+// Function to display the list of products in the fridge, along with their expiry status, and provide options to edit the products and update recipes based on the current fridge contents.
 export function showProducts(content, fridgeData, token, editMode = false, tempProducts = null) {
     const raw = tempProducts || fridgeData.products || [];
     const products = raw.map(p =>
@@ -84,6 +88,7 @@ export function showProducts(content, fridgeData, token, editMode = false, tempP
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
+    // Helper function to determine the expiry status of a product based on its expiry date, returning 'expired', 'expiring', or 'ok' depending on how close the expiry date is.
     function getExpiryStatus(expiryDate) {
         if (!expiryDate) return null;
         const exp = new Date(expiryDate);
@@ -94,6 +99,7 @@ export function showProducts(content, fridgeData, token, editMode = false, tempP
         return 'ok';
     }
 
+    // Helper function to determine the card style based on the expiry status of a product, returning different background and border colors for expired, expiring, and ok products.
     function cardStyle(status) {
         if (status === 'expired')  return 'background:#FFF0F0; border:1px solid #FFB0B0;';
         if (status === 'expiring') return 'background:#FFFBF0; border:1px solid #FFE08A;';
@@ -223,6 +229,7 @@ export function showProducts(content, fridgeData, token, editMode = false, tempP
     }
 }
 
+// Function to update the recipes based on the current fridge contents by sending a PATCH request to the server, and providing feedback on the update status.
 export async function updateRecipes(
     fridgeData,
     token

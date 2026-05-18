@@ -1,3 +1,4 @@
+// Frontend logic for the recipes feature, including displaying the list of recipes generated based on the fridge contents, and allowing the user to navigate through the recipes with a slider interface. The recipes are displayed with their name, ingredients, and steps, and the user can click through them using next and previous buttons.
 export function showRecipes(content, fridgeData) {
     const recipes = fridgeData.recipes;
     let current = 0;
@@ -70,6 +71,7 @@ export function showRecipes(content, fridgeData) {
     render();
 }
 
+// Helper function to render a single recipe slide, showing the recipe name, ingredients, and steps, along with navigation buttons to move between recipes. This function is used within the history view to display the recipes associated with a specific fridge history entry.
 export function renderRecipeSlide(recipes, current) {
     const r = recipes[current];
     return `
@@ -97,6 +99,7 @@ export function renderRecipeSlide(recipes, current) {
     `;
 }
 
+// Helper function to attach event listeners to the recipe slider buttons within the history view, allowing the user to navigate through the recipes associated with a specific fridge history entry. This function updates the displayed recipe slide when the user clicks the next or previous buttons.
 export function attachRecipeSlider(recipes, current) {
     const prev = document.getElementById('hr-prev');
     const next = document.getElementById('hr-next');

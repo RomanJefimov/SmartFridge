@@ -1,3 +1,4 @@
+// Frontend logic for the profile page, allowing the user to view and edit their personal characteristics such as name, nutrition goals, diet type, and allergies. The profile information is fetched from the server and can be updated by the user, which will help the AI generate more personalized recipes and analysis based on their preferences and restrictions.
 export async function showProfile(content, token) {
     content.innerHTML = `<div style="width:100%; padding:32px; box-sizing:border-box;"><h1 style="font-size:32px; font-weight:700; margin-bottom:24px;">Personal characteristics</h1><p>Loading...</p></div>`;
 

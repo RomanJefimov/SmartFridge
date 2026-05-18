@@ -2,6 +2,7 @@ const User = require('../model/User');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
+// Auth controller for handling user registration and login, including input validation, password hashing, and JWT token generation. The register endpoint validates the email and password format, checks for existing users, hashes the password, creates a new user, and returns a JWT token. The login endpoint verifies the user's credentials, updates the last login time, and returns a JWT token if successful.
 exports.register = async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -60,6 +61,7 @@ exports.register = async (req, res) => {
     }
 };
 
+// Login an existing user by verifying their email and password. If the credentials are valid, the endpoint updates the user's last login time and returns a JWT token along with the user's role and email. If the credentials are invalid, it returns an appropriate error message.
 exports.login = async (req, res) => {
     const { email, password } = req.body;
 

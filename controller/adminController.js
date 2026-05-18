@@ -1,6 +1,7 @@
 const User = require('../model/User');
 const bcrypt = require('bcryptjs');
 
+// Admin controller for handling administrative operations such as managing users, including listing all users, creating new users, updating user roles and passwords, and deleting users. These operations are protected and can only be performed by users with the admin role.
 exports.getUsers = async (req, res) => {
     try {
         const users = await User.find({}, '_id email role lastLoginAt createdAt');
@@ -11,6 +12,7 @@ exports.getUsers = async (req, res) => {
     }
 };
 
+// Create a new user with the specified email, password, and role. The password is hashed before being stored in the database, and the endpoint returns the created user's information without the password hash.
 exports.createUser = async (req, res) => {
     try {
         const { email, password, role } = req.body;
@@ -37,6 +39,7 @@ exports.createUser = async (req, res) => {
     }
 };
 
+// Update a user's role and/or password. Admins can change other users' roles and passwords, but cannot remove their own admin role or delete themselves. The endpoint validates the new password if provided, ensuring it meets certain complexity requirements before hashing and storing it.
 exports.updateUser = async (req, res) => {
     try {
         const { id } = req.params;
@@ -78,6 +81,7 @@ exports.updateUser = async (req, res) => {
     }
 };
 
+// Delete a user by ID. Admins can delete other users but cannot delete themselves. The endpoint checks if the user exists before attempting to delete and returns appropriate responses based on the outcome.
 exports.deleteUser = async (req, res) => {
     try {
         const { id } = req.params;
