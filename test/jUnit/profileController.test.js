@@ -1,7 +1,7 @@
-const profileController = require('../controller/profileController');
-const User = require('../model/User');
+const profileController = require('../../controller/profileController');
+const User = require('../../model/User');
 
-jest.mock('../model/User');
+jest.mock('../../model/User');
 
 describe('profileController', () => {
     let mockReq;

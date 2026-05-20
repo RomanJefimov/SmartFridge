@@ -1,8 +1,8 @@
-const adminController = require('../controller/adminController');
-const User = require('../model/User');
+const adminController = require('../../controller/adminController');
+const User = require('../../model/User');
 const bcrypt = require('bcryptjs');
 
-jest.mock('../model/User');
+jest.mock('../../model/User');
 jest.mock('bcryptjs');
 
 describe('adminController', () => {

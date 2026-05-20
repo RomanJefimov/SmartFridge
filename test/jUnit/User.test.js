@@ -240,7 +240,7 @@ describe('User Model Unit Tests', () => {
     let schemaCall;
 
     beforeAll(() => {
-        User = require('../model/User');
+        User = require('../../model/User');
 
         // Ensure mongoose.Schema was called
         expect(mongoose.Schema).toHaveBeenCalledTimes(1);

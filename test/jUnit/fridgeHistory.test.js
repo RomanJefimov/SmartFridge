@@ -216,7 +216,7 @@ describe('FridgeHistory Model Unit Tests', () => {
 
     beforeAll(() => {
         // Load mocked mongoose model
-        FridgeHistory = require('../model/fridgeHistory');
+        FridgeHistory = require('../../model/fridgeHistory');
 
         // Generate valid ObjectId using mocked mongoose.Types.ObjectId
         mockUserId = new mongoose.Types.ObjectId().toString();

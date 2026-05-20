@@ -1,10 +1,10 @@
-const fridgeController = require('../controller/fridgeController');
-const FridgeHistory = require('../model/FridgeHistory');
-const User = require('../model/User');
+const fridgeController = require('../../controller/fridgeController');
+const FridgeHistory = require('../../model/FridgeHistory');
+const User = require('../../model/User');
 const { GoogleGenAI } = require('@google/genai');
 
-jest.mock('../model/FridgeHistory');
-jest.mock('../model/User');
+jest.mock('../../model/FridgeHistory');
+jest.mock('../../model/User');
 jest.mock('@google/genai');
 
 describe('fridgeController', () => {

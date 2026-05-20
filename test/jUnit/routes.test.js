@@ -1,9 +1,9 @@
 const express = require('express');
-const adminRoutes = require('../route/adminRoutes');
-const authRoutes = require('../route/authRoutes');
-const fridgeRoutes = require('../route/fridgeRoutes');
-const profileRoutes = require('../route/profileRoutes');
-const viewRoutes = require('../route/viewRoutes');
+const adminRoutes = require('../../route/adminRoutes');
+const authRoutes = require('../../route/authRoutes');
+const fridgeRoutes = require('../../route/fridgeRoutes');
+const profileRoutes = require('../../route/profileRoutes');
+const viewRoutes = require('../../route/viewRoutes');
 
 describe('Routes', () => {
     test('adminRoutes should be defined', () => {

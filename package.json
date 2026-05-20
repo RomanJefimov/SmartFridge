@@ -5,9 +5,12 @@
   "scripts": {
     "start": "node server.js",
     "test": "jest",
-    "test:unit": "jest --testPathPattern=test/[^/]+\\.test\\.js$",
-    "test:integration": "jest --testPathPattern=integration",
-    "test:coverage": "jest --coverage"
+    "test:unit": "jest --testPathPatterns=test/jUnit/",
+    "test:integration": "jest --testPathPatterns=test/integration/",
+    "test:coverage": "jest --coverage",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:headed": "playwright test --headed"
   },
   "jest": {
     "testEnvironment": "node",
@@ -15,12 +18,18 @@
     "projects": [
       {
         "displayName": "unit",
-        "testMatch": ["<rootDir>/test/*.test.js"]
+        "testMatch": [
+          "<rootDir>/test/jUnit/*.test.js"
+        ]
       },
       {
         "displayName": "integration",
-        "testMatch": ["<rootDir>/test/integration/*.test.js"],
-        "setupFilesAfterEnv": ["<rootDir>/test/integration/setup.js"]
+        "testMatch": [
+          "<rootDir>/test/integration/*.test.js"
+        ],
+        "setupFilesAfterEnv": [
+          "<rootDir>/test/integration/setup.js"
+        ]
       }
     ],
     "coveragePathIgnorePatterns": [
@@ -42,6 +51,7 @@
     "multer": "^2.1.1"
   },
   "devDependencies": {
+    "@playwright/test": "^1.60.0",
     "jest": "^30.4.2",
     "mongodb-memory-server": "^10.1.4",
     "supertest": "^7.1.0"
